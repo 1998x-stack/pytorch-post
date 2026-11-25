@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "component": "05-autograd",
+  "slug": "reverse-mode-vjp",
+  "status": "handoff-ready",
+  "scope": "实数、CPU eager、一阶反向微分；标量 loss 与显式种子的向量输出",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "blockers": [],
+  "sources": [
+    {
+      "id": "paszke-2017",
+      "kind": "paper",
+      "relationship": "direct",
+      "status": "verified",
+      "title": "Automatic differentiation in PyTorch — Paszke et al. (2017)",
+      "url": "https://openreview.net/references/pdf?id=BJJsrmfCZ",
+      "version": "2017 workshop draft",
+      "locator": "§1 Background; §3 Implementation; §3.1 Supporting in-place operations"
+    },
+    {
+      "id": "baydin-2018",
+      "kind": "paper",
+      "relationship": "algorithm",
+      "status": "verified",
+      "title": "Automatic Differentiation in Machine Learning: a Survey — Baydin et al. (2018)",
+      "url": "https://jmlr.org/papers/volume18/17-468/17-468.pdf",
+      "version": "JMLR 18, published April 2018",
+      "locator": "§3.2, pp.12–13"
+    },
+    {
+      "id": "python-engine",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "THPEngine Python backward binding",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/python_engine.cpp#L180-L272",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "accumulate_grad argument and root gradient edges"
+    },
+    {
+      "id": "input-buffer",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "InputBuffer::add",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/input_buffer.cpp#L192-L216",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "CPU branch, InputBuffer::add"
+    }
+  ],
+  "claims": [
+    {
+      "id": "ad-1",
+      "kind": "paper",
+      "statement": "动态 eager 计算记录反向传播所需依赖，支持反向自动微分。",
+      "evidence": [
+        "paszke-2017"
+      ],
+      "limitation": "2017 论文介绍历史设计，不等于 2.10 内部布局。",
+      "status": "verified"
+    },
+    {
+      "id": "ad-2",
+      "kind": "deduction",
+      "statement": "对于实数可微 f: R^n→R^m，给定 v∈R^m，反向传播返回 J_f(x)^T v；分支贡献相加。",
+      "evidence": [
+        "baydin-2018",
+        "input-buffer"
+      ],
+      "limitation": "局部可微；本文不讨论复数、不可微点或高阶微分。",
+      "status": "verified"
+    },
+    {
+      "id": "ad-3",
+      "kind": "measured",
+      "statement": "CPU float64 示例 x²+3x 在 x=-2,0,2 的梯度为 -1,3,7；向量示例 VJP 为 [17,13]。",
+      "evidence": [
+        "baydin-2018"
+      ],
+      "limitation": "仅限所列小样本。",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "runs": [
+    {
+      "id": "cpu-check",
+      "kind": "correctness",
+      "status": "passed",
+      "command": "python 05-autograd/minimal-implementation/reverse-mode-vjp/demo.py",
+      "environment": "Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; CPU only; deterministic float64 inputs",
+      "raw_log": "05-autograd/experiments/reverse-mode-vjp/cpu.log"
+    },
+    {
+      "id": "performance",
+      "kind": "benchmark",
+      "status": "not-applicable",
+      "reason": "本主题验证机制与数值正确性，不提出性能主张。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "papers",
+      "path": "05-autograd/papers/reverse-mode-vjp.md"
+    },
+    {
+      "role": "source-analysis",
+      "path": "05-autograd/source-analysis/reverse-mode-vjp.md"
+    },
+    {
+      "role": "algorithms",
+      "path": "05-autograd/algorithms/reverse-mode-vjp.md"
+    },
+    {
+      "role": "implementation",
+      "path": "05-autograd/minimal-implementation/reverse-mode-vjp/demo.py"
+    },
+    {
+      "role": "experiments",
+      "path": "05-autograd/experiments/reverse-mode-vjp/cpu.log"
+    },
+    {
+      "role": "review",
+      "path": "05-autograd/references/reverse-mode-vjp/review.md"
+    },
+    {
+      "role": "handoff",
+      "path": "05-autograd/references/reverse-mode-vjp/handoff.md"
+    }
+  ]
+}

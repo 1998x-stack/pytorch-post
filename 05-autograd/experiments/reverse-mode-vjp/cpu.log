@@ -1,0 +1,7 @@
+Environment: Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; CPU only; deterministic float64 inputs
+Command: python 05-autograd/minimal-implementation/reverse-mode-vjp/demo.py
+Exit: 0
+x=-2 y=-2 gradient=-1
+x=0 y=0 gradient=3
+x=2 y=10 gradient=7
+VJP: [17.0, 13.0]

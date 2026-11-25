@@ -84,7 +84,7 @@
       "id": "05-autograd",
       "title": "自动微分",
       "focus": "反向模式、计算图、梯度累积与版本计数",
-      "status": "scaffold",
+      "status": "partial",
       "source_candidates": [
         "torch/csrc/autograd",
         "tools/autograd/derivatives.yaml"

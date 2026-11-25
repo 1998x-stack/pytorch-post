@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "component": "05-autograd",
+  "slug": "saved-tensors-versioning",
+  "status": "handoff-ready",
+  "scope": "PyTorch 2.10 eager CPU、普通 SavedVariable 无 hooks 路径；不覆盖 inference tensor、所有别名机制或 hooks",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "blockers": [],
+  "sources": [
+    {
+      "id": "paszke-2017",
+      "kind": "paper",
+      "relationship": "direct",
+      "status": "verified",
+      "title": "Automatic differentiation in PyTorch — Paszke et al. (2017)",
+      "url": "https://openreview.net/references/pdf?id=BJJsrmfCZ",
+      "version": "2017 workshop draft",
+      "locator": "§1 Background; §3 Implementation; §3.1 Supporting in-place operations"
+    },
+    {
+      "id": "saved-constructor",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "SavedVariable constructor",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/saved_variable.cpp#L17-L65",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "saved_version_, inference tensor guard"
+    },
+    {
+      "id": "saved-unpack",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "SavedVariable::unpack",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/saved_variable.cpp#L130-L198",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "undefined data and version check when hooks absent"
+    },
+    {
+      "id": "engine-evaluate",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Engine::evaluate_function",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/engine.cpp#L1130-L1235",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "release_variables, dependencies_, not_ready_, queue->push"
+    }
+  ],
+  "claims": [
+    {
+      "id": "sv-1",
+      "kind": "implementation",
+      "statement": "SavedVariable 构造保存变量版本；普通无 hooks 的 unpack 比较保存版本与当前版本，发现不一致抛错。",
+      "evidence": [
+        "saved-constructor",
+        "saved-unpack"
+      ],
+      "limitation": "saved tensor hooks 路径不能作相同保证。",
+      "status": "verified"
+    },
+    {
+      "id": "sv-2",
+      "kind": "implementation",
+      "statement": "当 keep_graph_ 为 false，Engine::evaluate_function 调用 release_variables；随后已释放的 saved data 可能导致再次 backward 报错。",
+      "evidence": [
+        "engine-evaluate",
+        "saved-unpack"
+      ],
+      "limitation": "并非所有不保存中间值的图第二次 backward 都必然报错。",
+      "status": "verified"
+    },
+    {
+      "id": "sv-3",
+      "kind": "measured",
+      "statement": "在 x*x 示例中，detach 别名原地修改触发版本错误；detach().clone() 独立修改仍得到梯度 4；保留图再 backward 两次得到累积梯度 8，第三次因保存值释放报错。",
+      "evidence": [
+        "saved-constructor",
+        "saved-unpack",
+        "engine-evaluate"
+      ],
+      "limitation": "仅针对本次 CPU float64 示例。",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "runs": [
+    {
+      "id": "cpu-check",
+      "kind": "correctness",
+      "status": "passed",
+      "command": "python 05-autograd/minimal-implementation/saved-tensors-versioning/demo.py",
+      "environment": "Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; CPU only; deterministic float64 inputs",
+      "raw_log": "05-autograd/experiments/saved-tensors-versioning/cpu.log"
+    },
+    {
+      "id": "performance",
+      "kind": "benchmark",
+      "status": "not-applicable",
+      "reason": "本主题验证机制与数值正确性，不提出性能主张。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "papers",
+      "path": "05-autograd/papers/saved-tensors-versioning.md"
+    },
+    {
+      "role": "source-analysis",
+      "path": "05-autograd/source-analysis/saved-tensors-versioning.md"
+    },
+    {
+      "role": "algorithms",
+      "path": "05-autograd/algorithms/saved-tensors-versioning.md"
+    },
+    {
+      "role": "implementation",
+      "path": "05-autograd/minimal-implementation/saved-tensors-versioning/demo.py"
+    },
+    {
+      "role": "experiments",
+      "path": "05-autograd/experiments/saved-tensors-versioning/cpu.log"
+    },
+    {
+      "role": "review",
+      "path": "05-autograd/references/saved-tensors-versioning/review.md"
+    },
+    {
+      "role": "handoff",
+      "path": "05-autograd/references/saved-tensors-versioning/handoff.md"
+    }
+  ]
+}

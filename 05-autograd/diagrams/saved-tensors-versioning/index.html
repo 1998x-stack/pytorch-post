@@ -1,0 +1,80 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SavedVariable：保存值、版本计数与原地修改</title><style>:root{color-scheme:light;--paper:#fffdf9;--ink:#203035;--subtle:#53676d;--accent:#147f80;--transform:#d06d4d;--structure:#7461ba;--annotation:#916c22;--border:#dce8e4;--surface:#f3f9f6;--max-reading:820px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.85 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+a{color:var(--accent);text-underline-offset:.17em}a:hover{color:var(--transform)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.skip-link{position:absolute;left:1rem;top:-5rem;background:var(--ink);color:white;padding:.5rem 1rem;z-index:10}.skip-link:focus{top:1rem}
+.layout{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:210px minmax(0,1fr);gap:clamp(2rem,5vw,5rem);padding:4.25rem 2rem 8rem}
+.toc{position:sticky;top:2rem;align-self:start;font-size:.83rem;line-height:1.55;max-height:calc(100vh - 4rem);overflow:auto}
+.toc strong{display:block;font-size:.85rem;letter-spacing:.08em;margin-bottom:.9rem}.toc a{display:block;text-decoration:none;color:var(--subtle);border-left:2px solid var(--border);padding:.4rem .75rem}.toc a:hover,.toc a[aria-current="location"]{border-color:var(--accent);color:var(--accent);background:var(--surface)}
+main{min-width:0}article{max-width:var(--max-reading);margin:0 auto;min-width:0}
+.article-header{padding-top:.5rem;padding-bottom:1rem}.article-header h1{font-size:clamp(2.65rem,5.7vw,4.5rem);line-height:1.12;letter-spacing:-.04em;margin:.35rem 0 1.15rem}.dek{font-size:clamp(1.12rem,2.2vw,1.35rem);line-height:1.65;color:var(--subtle)}
+section{scroll-margin-top:2rem;margin-top:4.25rem}h2{font-size:clamp(1.55rem,3vw,2rem);line-height:1.4;margin:0 0 1.35rem}h3{font-size:1.25rem;line-height:1.5;margin:2.2rem 0 .8rem}
+p{margin:1rem 0}strong{font-weight:700}code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{font-size:.89em}pre{padding:1.15rem;background:#1c3037;color:#e7f5ef;border-radius:.8rem;overflow:auto;line-height:1.6;font-size:.88rem}
+figure{margin:2.1rem 0;padding:1.2rem;border:1px solid var(--border);border-radius:1rem;background:white}figure svg{width:100%;height:auto;display:block}figcaption{font-size:.83rem;line-height:1.7;color:var(--subtle);border-top:1px solid var(--border);margin-top:.9rem;padding-top:.8rem}
+.note{margin:1.6rem 0;padding:.9rem 1.1rem;border-left:4px solid var(--accent);background:var(--surface);border-radius:0 .5rem .5rem 0}
+.equation{text-align:center;font:1.35rem/1.5 Georgia,serif;background:var(--surface);border-radius:.7rem;padding:1rem;overflow-x:auto}
+.control-row{display:flex;gap:.65rem;flex-wrap:wrap;margin:1rem 0}button{font:inherit;font-size:.9rem;cursor:pointer;padding:.5rem .8rem;border:1px solid var(--border);border-radius:.5rem;background:white;color:var(--ink)}button[aria-pressed="true"]{background:var(--accent);color:white;border-color:var(--accent)}
+.status{min-height:1.5em;color:var(--accent);font-weight:600}table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{border-bottom:1px solid var(--border);text-align:left;padding:.65rem;vertical-align:top}
+@media(max-width:900px){.layout{display:block;padding:2rem 1.2rem 5rem}.toc{position:static;max-height:none;margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:1rem}.toc a{display:inline-block;border-left:0;border-bottom:2px solid transparent;margin-right:.35rem;padding:.4rem .3rem}}
+@media(max-width:480px){body{font-size:16px}.layout{padding:1.3rem 1rem 4rem}figure{padding:.6rem}section{margin-top:3.25rem}h2{margin-bottom:1rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+@media print{body{background:white;color:black;font-size:11pt}.layout{display:block;padding:0}.toc,.control-row,.skip-link{display:none!important}article{max-width:none}figure{break-inside:avoid;box-shadow:none}a{color:#164e54}section{margin-top:1.6rem}}
+
+/* Mathematical typography: native MathML, offline and accessible. */
+.math-inline{font-family:"Cambria Math","STIX Two Math","Latin Modern Math",serif;vertical-align:-.05em}
+.math-equation{max-width:100%;min-width:0;margin:1.6rem 0;padding:.5rem 0;border-block:1px solid #dfe8e4}
+.math-scroll,[data-math-scroll]{display:block;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.math-scroll:focus-visible,[data-math-scroll]:focus-visible{outline:3px solid #147f80;outline-offset:2px}
+.math-scroll math[display="block"],[data-math-scroll] math[display="block"]{width:max-content;min-width:100%;font-size:clamp(1.05rem,2.2vw,1.3rem)}
+@media(max-width:480px){.math-scroll math[display="block"],[data-math-scroll] math[display="block"]{font-size:1.03rem}}
+@media print{.math-equation{break-inside:avoid}.math-scroll,[data-math-scroll]{overflow:visible}.math-scroll math[display="block"],[data-math-scroll] math[display="block"]{font-size:1rem}}
+
+body{overflow-wrap:anywhere}.series-nav{font-size:.84rem;display:flex;gap:1rem;flex-wrap:wrap}.article-header h1{font-size:clamp(2rem,5vw,3.55rem)}.chapter{letter-spacing:.14em;color:var(--accent);font-size:.8rem;font-weight:700}.status{padding:.6rem;background:var(--surface);border-radius:.4rem}dt{font-weight:bold}dd{margin:0 0 .8rem}figure svg{min-width:0}pre{white-space:pre;overflow-wrap:normal}.small{font-size:.85rem;color:var(--subtle)}</style></head><body><a class="skip-link" href="#main">跳至正文</a><div class="layout"><nav class="toc" aria-label="目录"><strong>本篇目录</strong><a href="#problem">如果前向的 x 被覆盖</a><a href="#branch">版本计数检测冲突</a><a href="#alias">detach 与 clone 的区别</a><a href="#source">保存值的生命周期与 retain_graph</a><a href="#experiment">可运行实验</a><a href="#evidence">证据与参考</a><a href="../">Autograd 系列</a><a href="../../">组件索引</a></nav><main id="main"><article><header class="article-header"><p class="chapter">PYTORCH INTERNALS · AUTOGRAD / 03</p><h1>SavedVariable：保存值、版本计数与原地修改</h1><p class="dek">为什么 detach() 之后修改张量仍可能让 backward 报错？理解保存的前向值、共享版本计数和反向资源生命周期。</p><p class="small">源码范围：PyTorch 2.10.0 · 449b17684101 · PyTorch 2.10 eager CPU、普通 SavedVariable 无 hooks 路径；不覆盖 inference tensor、所有别名机制或 hooks</p></header><section id="problem"><h2>如果前向的 x 被覆盖</h2><p>令 x=2，L=x*x，前向结果 4。局部导数需要前向时刻的 x，因此正确梯度为 4。如果在 backward 前把 x 改成 3，直接读取当前 x 会得到错误的 6。自动微分必须保护保存值的语义，而不是盲目使用最新数据。</p></section><section id="branch"><h2>版本计数检测冲突</h2><p>SavedVariable 在构造时记录版本。对于普通无 hooks 的 unpack，保存版本必须等于当前版本。若不一致就报错，防止使用被原地修改的保存值。下图中的 0、1 是教学示意；实际起始版本取决于张量历史。<a href="#sv-1">[SV-1]</a></p><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 335" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">保存版本与共享别名</title><desc id="diagram-desc">实数标量示例，箭头表示依赖或梯度流，文字给出节点含义及数值。</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#53676d"/></marker></defs><g fill="#203035" font-family="system-ui, sans-serif"><rect x="25" y="16" width="245" height="60" rx="9" fill="#7461ba" fill-opacity=".09" stroke="#7461ba" stroke-width="2"/><text x="147.5" y="40" text-anchor="middle" font-size="16" font-weight="600">SavedVariable</text><text x="147.5" y="59" text-anchor="middle" font-size="13">saved = 0</text><rect x="310" y="16" width="245" height="60" rx="9" fill="#147f80" fill-opacity=".09" stroke="#147f80" stroke-width="2"/><text x="432.5" y="40" text-anchor="middle" font-size="16" font-weight="600">原张量 x</text><text x="432.5" y="59" text-anchor="middle" font-size="13">current = 0</text><rect x="310" y="118" width="245" height="60" rx="9" fill="#d06d4d" fill-opacity=".09" stroke="#d06d4d" stroke-width="2"/><text x="432.5" y="142" text-anchor="middle" font-size="16" font-weight="600">detach 别名</text><text x="432.5" y="161" text-anchor="middle" font-size="13">共享存储 / 版本</text><rect x="25" y="118" width="245" height="60" rx="9" fill="#147f80" fill-opacity=".09" stroke="#147f80" stroke-width="2"/><text x="147.5" y="142" text-anchor="middle" font-size="16" font-weight="600">独立 clone</text><text x="147.5" y="161" text-anchor="middle" font-size="13">独立存储 / 版本</text><path d="M432 76 V118" fill="none" stroke="#147f80" stroke-width="2.5" marker-end="url(#arrow)"/><path d="M310 45 H270" fill="none" stroke="#147f80" stroke-width="2.5" marker-end="url(#arrow)"/><path d="M310 147 H275" fill="none" stroke="#d06d4d" stroke-width="2.5" marker-end="url(#arrow)"/><text x="290" y="214" text-anchor="middle" font-size="17">修改共享别名 → current = 1</text><rect x="120" y="240" width="340" height="58" rx="9" fill="#d06d4d" fill-opacity=".09" stroke="#d06d4d" stroke-width="2"/><text x="290" y="264" text-anchor="middle" font-size="16" font-weight="600">unpack 版本比较</text><text x="290" y="283" text-anchor="middle" font-size="13">0 ≠ 1 → 拒绝</text></g></svg><figcaption>保存：x=2，saved=0，current=0；梯度应为 4；原地修改共享别名：x=3，saved=0，current=1；unpack 拒绝；修改独立 clone：原 x=2，版本未变；梯度仍为 4。教学示意，非实际引擎运行追踪。</figcaption><div class="control-row"><button type="button" data-step="0" aria-pressed="true">保存前向值</button><button type="button" data-step="1" aria-pressed="false">修改 detach 别名</button><button type="button" data-step="2" aria-pressed="false">修改 clone</button></div><p class="status" aria-live="polite" id="state">保存：x=2，saved=0，current=0；梯度应为 4</p><noscript><p>保存：x=2，saved=0，current=0；梯度应为 4；原地修改共享别名：x=3，saved=0，current=1；unpack 拒绝；修改独立 clone：原 x=2，版本未变；梯度仍为 4</p></noscript><p class="small"><a href="assets/mechanism.svg">独立查看图示</a></p></figure></section><section id="alias"><h2>detach 与 clone 的区别</h2><p>detach() 断开反向关联，但不保证独立存储；修改 detached 别名仍会影响原张量，并共享版本计数。detach().clone() 则创建独立副本。在示例中，修改别名后 backward 抛错，而修改克隆副本后仍得到梯度 4。不是所有原地操作都会报错：是否保存、是否需要旧值、别名及 grad 模式共同决定行为。</p><p>不要把 no_grad 当作版本检查的绕过方式，也不要用 .data 隐藏修改。对真正需要修改的训练参数，在一次 backward 完成后通过 optimizer 按常规步骤更新。</p></section><section id="source"><h2>保存值的生命周期与 retain_graph</h2><p>当 keep_graph_ 为 false，执行完反向函数后 Engine 调用 release_variables；SavedVariable::unpack 遇到未定义 data 且无 hooks 时检查重复 backward 错误。retain_graph=True 保留本次 backward 所需状态，但不是 create_graph=True：后者用于构建导数计算的图。<a href="#sv-2">[SV-2]</a></p><p>对于 x*x，第一次保留图，第二次默认释放，两个梯度累积到 8；第三次报错。对于不需要保存中间值的简单算子，重复 backward 可能不报相同错误。2017 论文 §3/§3.1 提供设计背景，2.10 源码才是本文实现判断的依据。<a href="#sv-3">[SV-3]</a></p></section><section id="experiment"><h2>可运行实验</h2><p>环境：PyTorch 2.10.0+cpu、Python 3.13.5；使用确定性 float64 输入，未使用 GPU。toy 是教学模型，native 是 PyTorch 对照。</p><pre><code>import torch
+
+def check_version(saved, current):
+    if saved != current:
+        raise ValueError('stale saved value')
+
+check_version(0, 0)
+try:
+    check_version(0, 1)
+except ValueError:
+    print('toy: mismatch rejected')
+else:
+    raise AssertionError('expected mismatch')
+x = torch.tensor(2., dtype=torch.float64, requires_grad=True)
+y = x*x
+alias = x.detach()
+before = x._version
+alias.add_(1)
+assert x._version == before + 1
+try:
+    y.backward()
+except RuntimeError as exc:
+    assert 'modified by an inplace operation' in str(exc)
+    print('native: version mismatch rejected')
+else:
+    raise AssertionError('expected version error')
+x = torch.tensor(2., dtype=torch.float64, requires_grad=True)
+y = x*x
+x.detach().clone().add_(1)
+y.backward()
+assert x.grad.item() == 4
+print('clone leaves gradient:', x.grad.item())
+x = torch.tensor(2., dtype=torch.float64, requires_grad=True)
+y = x*x
+y.backward(retain_graph=True)
+y.backward()
+assert x.grad.item() == 8
+try:
+    y.backward()
+except RuntimeError as exc:
+    assert 'backward through the graph a second time' in str(exc)
+    print('released saved values: repeat rejected')
+else:
+    raise AssertionError('expected release error')</code></pre><h3>实际输出</h3><pre><code>toy: mismatch rejected
+native: version mismatch rejected
+clone leaves gradient: 4.0
+released saved values: repeat rejected</code></pre><p><a href="https://github.com/1998x-stack/pytorch-post/blob/main/05-autograd/minimal-implementation/saved-tensors-versioning/demo.py">Python 源码</a> · <a href="https://github.com/1998x-stack/pytorch-post/blob/main/05-autograd/experiments/saved-tensors-versioning/cpu.log">原始实验日志</a></p></section><section id="evidence"><h2>证据与参考</h2><p id="sv-1"><strong>SV-1</strong> SavedVariable 构造保存变量版本；普通无 hooks 的 unpack 比较保存版本与当前版本，发现不一致抛错。 <span class="small">限制：saved tensor hooks 路径不能作相同保证。</span> <a href="#src-saved-constructor">[saved-constructor]</a> <a href="#src-saved-unpack">[saved-unpack]</a></p><p id="sv-2"><strong>SV-2</strong> 当 keep_graph_ 为 false，Engine::evaluate_function 调用 release_variables；随后已释放的 saved data 可能导致再次 backward 报错。 <span class="small">限制：并非所有不保存中间值的图第二次 backward 都必然报错。</span> <a href="#src-engine-evaluate">[engine-evaluate]</a> <a href="#src-saved-unpack">[saved-unpack]</a></p><p id="sv-3"><strong>SV-3</strong> 在 x*x 示例中，detach 别名原地修改触发版本错误；detach().clone() 独立修改仍得到梯度 4；保留图再 backward 两次得到累积梯度 8，第三次因保存值释放报错。 <span class="small">限制：仅针对本次 CPU float64 示例。</span> <a href="#src-saved-constructor">[saved-constructor]</a> <a href="#src-saved-unpack">[saved-unpack]</a> <a href="#src-engine-evaluate">[engine-evaluate]</a></p><ol><li id="src-paszke-2017"><a href="https://openreview.net/references/pdf?id=BJJsrmfCZ">Automatic differentiation in PyTorch — Paszke et al. (2017)</a> — §1 Background; §3 Implementation; §3.1 Supporting in-place operations</li><li id="src-saved-constructor"><a href="https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/saved_variable.cpp#L17-L65">SavedVariable constructor</a> — saved_version_, inference tensor guard</li><li id="src-saved-unpack"><a href="https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/saved_variable.cpp#L130-L198">SavedVariable::unpack</a> — undefined data and version check when hooks absent</li><li id="src-engine-evaluate"><a href="https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/engine.cpp#L1130-L1235">Engine::evaluate_function</a> — release_variables, dependencies_, not_ready_, queue-&gt;push</li></ol></section><nav class="series-nav" aria-label="系列导航"><a href="../">返回系列</a><a href="../engine-scheduling/">上一篇</a></nav></article></main></div><script>const states=["保存：x=2，saved=0，current=0；梯度应为 4","原地修改共享别名：x=3，saved=0，current=1；unpack 拒绝","修改独立 clone：原 x=2，版本未变；梯度仍为 4"];document.querySelectorAll('button[data-step]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('button[data-step]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));document.getElementById('state').textContent=states[Number(b.dataset.step)];}));</script></body></html>
