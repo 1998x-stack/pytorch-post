@@ -1,0 +1,6 @@
+Environment: Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; deterministic float64 CPU inputs
+Command: python 05-autograd/minimal-implementation/derivative-codegen/demo.py
+Exit: 0
+node: MulBackward0
+broadcast VJP: [[32.0], [77.0]] [[14.0, 19.0, 24.0]]
+gradcheck: passed
