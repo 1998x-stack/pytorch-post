@@ -33,7 +33,7 @@
       "id": "02-tensor-storage",
       "title": "张量与存储",
       "focus": "shape、stride、storage offset、别名与视图",
-      "status": "scaffold",
+      "status": "partial",
       "source_candidates": [
         "c10/core/TensorImpl.h",
         "c10/core/StorageImpl.h"

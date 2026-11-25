@@ -1,0 +1,121 @@
+{
+  "component": "02-tensor-storage",
+  "slug": "view-reshape-transpose",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "sources": [
+    {
+      "id": "pytorch-2019",
+      "kind": "paper",
+      "relationship": "direct-framework",
+      "status": "verified",
+      "title": "Paszke et al., PyTorch: An Imperative Style, High-Performance Deep Learning Library",
+      "url": "https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf",
+      "version": "NeurIPS 2019",
+      "locator": "§5.1, p.5: C++ tensor implementation; §4.3 mutation/versioning. Historical context only."
+    },
+    {
+      "id": "views-doc",
+      "kind": "official-doc",
+      "relationship": "official-doc",
+      "status": "verified",
+      "title": "Tensor Views",
+      "url": "https://docs.pytorch.org/docs/stable/tensor_view.html",
+      "version": "online documentation consulted 2026-11-25 (not version-pinned)",
+      "locator": "Shared storage, basic/advanced indexing, reshape caveat"
+    },
+    {
+      "id": "view-doc",
+      "kind": "official-doc",
+      "relationship": "official-doc",
+      "status": "verified",
+      "title": "torch.Tensor.view",
+      "url": "https://docs.pytorch.org/docs/stable/generated/torch.Tensor.view.html",
+      "version": "online documentation consulted 2026-11-25 (not version-pinned)",
+      "locator": "Contiguity-like condition"
+    },
+    {
+      "id": "transpose",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Dense transpose swaps sizes and strides",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/aten/src/ATen/native/TensorShape.cpp#L3815-L3847",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "aten/src/ATen/native/TensorShape.cpp:3815–3847"
+    },
+    {
+      "id": "view",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "view_impl compatibility check",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/aten/src/ATen/native/TensorShape.cpp#L4092-L4102",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "aten/src/ATen/native/TensorShape.cpp:4092–4102"
+    },
+    {
+      "id": "compute-stride",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "computeStride_impl chunk matching",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/aten/src/ATen/TensorUtils.cpp#L327-L407",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "aten/src/ATen/TensorUtils.cpp:327–407"
+    },
+    {
+      "id": "reshape",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "reshape_symint alias or clone fallback",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/aten/src/ATen/native/TensorShape.cpp#L2057-L2106",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "aten/src/ATen/native/TensorShape.cpp:2057–2106"
+    }
+  ],
+  "claims": [
+    {
+      "id": "view-1",
+      "kind": "implementation",
+      "statement": "Ordinary dense transpose swaps size and stride dimensions and delegates to as_strided; view_impl requires computeStride to produce compatible strides.",
+      "evidence": [
+        "transpose",
+        "view",
+        "compute-stride"
+      ],
+      "limitation": "Sparse and special layout paths differ.",
+      "status": "verified"
+    },
+    {
+      "id": "view-2",
+      "kind": "implementation",
+      "statement": "reshape_symint uses view for contiguous input, otherwise tests computeStride and uses alias or falls back to contiguous clone plus unsafe view.",
+      "evidence": [
+        "reshape",
+        "compute-stride"
+      ],
+      "limitation": "Ordinary dense path, not a universal alias guarantee.",
+      "status": "verified"
+    },
+    {
+      "id": "view-3",
+      "kind": "measured",
+      "statement": "Transpose of 3×4 has (1,4) stride and shares storage; flatten view fails, reshape copies. A non-contiguous step-2 slice can flatten using view with stride (2,).",
+      "evidence": [
+        "transpose",
+        "view",
+        "reshape",
+        "view-doc"
+      ],
+      "limitation": "Specific nonempty CPU sample; shape and stride determine feasibility, not is_contiguous alone.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "experiment": {
+    "path": "02-tensor-storage/minimal-implementation/view-reshape-transpose/demo.py",
+    "log": "02-tensor-storage/experiments/view-reshape-transpose/cpu.log",
+    "blob_sha": "824823a072c56d0fc85c3a8cedbffec701639dbe"
+  }
+}

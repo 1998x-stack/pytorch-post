@@ -110,6 +110,33 @@
       "order": 12,
       "source": "05-autograd/diagrams/compiled-autograd/index.html",
       "status": "handoff-ready"
+    },
+    {
+      "component": "02-tensor-storage",
+      "slug": "tensor-storage-object-model",
+      "title": "Tensor 与 Storage：数据、元数据和所有权",
+      "summary": "为什么切片的元素变少了，底层存储却可能仍然一样大？区分 TensorBase、TensorImpl、Storage 和 StorageImpl。",
+      "order": 1,
+      "source": "02-tensor-storage/diagrams/tensor-storage-object-model/index.html",
+      "status": "handoff-ready"
+    },
+    {
+      "component": "02-tensor-storage",
+      "slug": "shape-stride-offset",
+      "title": "Shape、Stride、Storage Offset：张量地址映射的数学体系",
+      "summary": "一条仿射地址公式统一解释切片、转置和零步长，并从 storage 范围推导越界条件。",
+      "order": 2,
+      "source": "02-tensor-storage/diagrams/shape-stride-offset/index.html",
+      "status": "handoff-ready"
+    },
+    {
+      "component": "02-tensor-storage",
+      "slug": "view-reshape-transpose",
+      "title": "View、Reshape 与 Transpose：何时零拷贝，何时复制？",
+      "summary": "从 computeStride 的连续子块判定出发，理解非连续不等于不可 view，并追踪 reshape 的 clone fallback。",
+      "order": 3,
+      "source": "02-tensor-storage/diagrams/view-reshape-transpose/index.html",
+      "status": "handoff-ready"
     }
   ]
 }

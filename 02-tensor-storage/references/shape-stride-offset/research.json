@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "component": "02-tensor-storage",
+  "slug": "shape-stride-offset",
+  "status": "handoff-ready",
+  "scope": "非空普通 CPU strided int64，非负 stride；示例覆盖零步长读取，不执行重叠写入，不推及 sparse/meta/符号形状。",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "blockers": [],
+  "sources": [
+    {
+      "id": "pytorch-2019",
+      "kind": "paper",
+      "relationship": "direct-framework",
+      "status": "verified",
+      "title": "Paszke et al., PyTorch: An Imperative Style, High-Performance Deep Learning Library",
+      "url": "https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf",
+      "version": "NeurIPS 2019",
+      "locator": "§5.1, p.5: C++ tensor implementation; §4.3 mutation/versioning. Historical context only."
+    },
+    {
+      "id": "storage-doc",
+      "kind": "official-doc",
+      "relationship": "official-doc",
+      "status": "verified",
+      "title": "torch.Storage",
+      "url": "https://docs.pytorch.org/docs/stable/storage.html",
+      "version": "online documentation consulted 2026-11-25 (not version-pinned)",
+      "locator": "Storage, offset and sharing"
+    },
+    {
+      "id": "layout",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "TensorImpl shape and offset",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/c10/core/TensorImpl.h#L2923-L2934",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "c10/core/TensorImpl.h:2923–2934"
+    },
+    {
+      "id": "offset",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "TensorImpl data byte offset",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/c10/core/TensorImpl.h#L1670-L1693",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "c10/core/TensorImpl.h:1670–1693"
+    },
+    {
+      "id": "as-strided",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "as_strided_tensorimpl",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/aten/src/ATen/native/TensorShape.cpp#L1409-L1421",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "aten/src/ATen/native/TensorShape.cpp:1409–1421"
+    },
+    {
+      "id": "bounds",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "checkInBoundsForStorage",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/aten/src/ATen/native/Resize.h#L83-L124",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "aten/src/ATen/native/Resize.h:83–124"
+    },
+    {
+      "id": "set-strided",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "setStrided checks and metadata",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/aten/src/ATen/native/Resize.h#L183-L203",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "aten/src/ATen/native/Resize.h:183–203"
+    }
+  ],
+  "claims": [
+    {
+      "id": "stride-1",
+      "kind": "deduction",
+      "statement": "For a nonempty ordinary tensor, element index in storage = offset + sum(i_d × stride_d); byte address = base + itemsize × index.",
+      "evidence": [
+        "layout",
+        "offset",
+        "as-strided",
+        "storage-doc"
+      ],
+      "limitation": "Element strides and offsets, not byte strides; nonnegative indices within shape.",
+      "status": "verified"
+    },
+    {
+      "id": "stride-2",
+      "kind": "deduction",
+      "statement": "For nonnegative strides, maximum reached index is offset + sum((size_d−1) × stride_d); nonempty storage requires (max_index+1) × itemsize bytes or more.",
+      "evidence": [
+        "bounds",
+        "set-strided"
+      ],
+      "limitation": "Only nonempty tensors and nonnegative strides; empty layouts have distinct checks.",
+      "status": "verified"
+    },
+    {
+      "id": "stride-3",
+      "kind": "measured",
+      "statement": "An explicit Python offset enumerator matches three native as_strided layouts, including zero stride, and out-of-bounds as_strided raises RuntimeError.",
+      "evidence": [
+        "as-strided",
+        "bounds",
+        "set-strided"
+      ],
+      "limitation": "Read-only test of overlap; never write through overlapping layout.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "runs": [
+    {
+      "id": "cpu-check",
+      "kind": "correctness",
+      "status": "passed",
+      "command": "OMP_NUM_THREADS=1 python 02-tensor-storage/minimal-implementation/shape-stride-offset/demo.py",
+      "environment": "Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; OMP_NUM_THREADS=1; CPU int64",
+      "raw_log": "02-tensor-storage/experiments/shape-stride-offset/cpu.log"
+    },
+    {
+      "id": "performance",
+      "kind": "benchmark",
+      "status": "not-applicable",
+      "reason": "机制和数值验证，无实测性能主张。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "papers",
+      "path": "02-tensor-storage/papers/shape-stride-offset.md"
+    },
+    {
+      "role": "source-analysis",
+      "path": "02-tensor-storage/source-analysis/shape-stride-offset.md"
+    },
+    {
+      "role": "algorithms",
+      "path": "02-tensor-storage/algorithms/shape-stride-offset.md"
+    },
+    {
+      "role": "implementation",
+      "path": "02-tensor-storage/minimal-implementation/shape-stride-offset/demo.py"
+    },
+    {
+      "role": "experiments",
+      "path": "02-tensor-storage/experiments/shape-stride-offset/cpu.log"
+    },
+    {
+      "role": "review",
+      "path": "02-tensor-storage/references/shape-stride-offset/review.md"
+    },
+    {
+      "role": "handoff",
+      "path": "02-tensor-storage/references/shape-stride-offset/handoff.md"
+    }
+  ]
+}
