@@ -28,3 +28,8 @@ python -m http.server 8000 --directory _site
 ```
 
 访问 http://localhost:8000/。部署成功后检查首页、组件索引、三篇文章与 SVG 请求。构建不需要 GPU 或安装 PyTorch；实验复现另行执行。
+
+
+## 跨组件系列
+
+`catalog/posts.json` 可为文章增加 `series_component` 和 `series_order`（例如 AOTAutograd 正文在 10-aot-autograd，第 11 篇通过 05-autograd 的系列入口访问）。生成器验证关联组件与顺序唯一性，链接到原文而非复制正文；主页文章数量只统计 canonical 文章。

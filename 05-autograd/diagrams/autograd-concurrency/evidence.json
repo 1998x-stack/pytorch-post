@@ -1,0 +1,99 @@
+{
+  "component": "05-autograd",
+  "slug": "autograd-concurrency",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "sources": [
+    {
+      "id": "reentrant",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Engine reentrant backward and stream note",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/engine.cpp#L152-L181",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/engine.cpp:152–181"
+    },
+    {
+      "id": "queue",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "ReadyQueue push/pop",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/engine.cpp#L232-L274",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/engine.cpp:232–274"
+    },
+    {
+      "id": "routing",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Engine::ready_queue device routing",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/engine.cpp#L1540-L1557",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/engine.cpp:1540–1557"
+    },
+    {
+      "id": "stream",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "InputBuffer canonical stream contract",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/input_buffer.cpp#L136-L187",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/input_buffer.cpp:136–187"
+    },
+    {
+      "id": "mechanics",
+      "kind": "official-doc",
+      "relationship": "official-doc",
+      "status": "verified",
+      "title": "Autograd mechanics",
+      "url": "https://docs.pytorch.org/docs/main/notes/autograd.html",
+      "version": "Online documentation consulted 2026-11-25; not a 2.10 source pin",
+      "locator": "Multithreaded Autograd; Hogwild; thread safety"
+    }
+  ],
+  "claims": [
+    {
+      "id": "conc-1",
+      "kind": "implementation",
+      "statement": "Engine ready queues route CPU work and device work; a nested backward can block a worker, so the engine has a worker pool mechanism for reentrant work.",
+      "evidence": [
+        "queue",
+        "routing",
+        "reentrant"
+      ],
+      "limitation": "The pool mechanism is not asserted to be used in every nested backward; CPU and accelerator routes differ.",
+      "status": "verified"
+    },
+    {
+      "id": "conc-2",
+      "kind": "implementation",
+      "statement": "For CUDA/privateuse1 the engine associates backward device work with forward streams; producer-consumer synchronization and accumulation stream choices are described in InputBuffer.",
+      "evidence": [
+        "reentrant",
+        "stream"
+      ],
+      "limitation": "Source-level contract only; CUDA unavailable. No claim about exact kernel overlap or latency.",
+      "status": "verified"
+    },
+    {
+      "id": "conc-3",
+      "kind": "measured",
+      "statement": "Two independent CPU graph tasks return gradients 4 and 6; a custom backward that invokes torch.autograd.grad returns gradient 6.",
+      "evidence": [
+        "reentrant",
+        "mechanics"
+      ],
+      "limitation": "Correctness and completion only; no shared-leaf race or concurrency speedup measurement.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "experiment": {
+    "path": "05-autograd/minimal-implementation/autograd-concurrency/demo.py",
+    "log": "05-autograd/experiments/autograd-concurrency/cpu.log",
+    "blob_sha": "a3768afadcbcdaafd3c000bf68733d5329dbb318"
+  }
+}

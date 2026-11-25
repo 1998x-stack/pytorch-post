@@ -171,7 +171,7 @@
       "id": "10-aot-autograd",
       "title": "AOTAutograd",
       "focus": "联合前反向图、functionalization、partition",
-      "status": "scaffold",
+      "status": "partial",
       "source_candidates": [
         "torch/_functorch",
         "torch/_decomp"

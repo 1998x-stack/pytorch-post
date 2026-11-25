@@ -1,0 +1,3 @@
+# Autograd 第四批评审
+
+第 10–12 篇：并发/重入/stream，AOTAutograd 联合图，Compiled Autograd 运行时捕获。main 九篇、AOT 骨架与开放 PR 查重；第 11 篇 canonical 归属 10-aot-autograd，通过注册表交叉入口与前后篇导航关联。三个 CPU demo 实际执行退出 0；预期 Git blob SHA：autograd-concurrency a3768afadcbcdaafd3c000bf68733d5329dbb318；aot-joint-graph ca707285f8daf0cc99242346f47f8fb27aa99874；compiled-autograd c3824396122bd0e147ea89bba87004ac4b54430d。2024 ASPLOS 论文 §3.9 和官方 Compiled Autograd 教程核验；现代代码固定 449b1768410104d3ed79d3bcfe4ba1d65c7f22c0。没有 CUDA，未实测流同步、共享叶子并发、跨 graph-break 捕获、min-cut 优化、Inductor 或性能；实际捕获回调执行 FX 而非编译机器代码。12 个主题的课程范围闭环不等于完整穷尽 PyTorch Autograd。HTML QA 和部署以执行结果为准。

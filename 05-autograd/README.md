@@ -1,6 +1,6 @@
 # 自动微分
 
-状态：前三批九篇研究包与可视化已编写；发布以 Pages QA 和实际部署为准。
+状态：四批十二个系列主题（11 篇本组件、1 篇跨组件）研究包与可视化已编写；发布以 Pages QA 和实际部署为准。
 
 研究问题：反向模式、计算图、梯度累积与版本计数。
 
@@ -28,5 +28,9 @@
 7. [Forward-mode AD：Dual Tensor 与 JVP](diagrams/forward-mode-jvp/index.html) — [研究包](references/forward-mode-jvp/research.json)
 8. [高阶自动微分：Hessian、HVP 与 create_graph](diagrams/higher-order-hessian/index.html) — [研究包](references/higher-order-hessian/research.json)
 9. [Activation Checkpoint：重计算、早停与 RNG](diagrams/activation-checkpoint/index.html) — [研究包](references/activation-checkpoint/research.json)
+
+10. [Autograd 并发：ReadyQueue、重入与 CUDA Stream](diagrams/autograd-concurrency/index.html) — [研究包](references/autograd-concurrency/research.json)
+11. [AOTAutograd：联合图、前反向分区与保存值](../10-aot-autograd/diagrams/aot-joint-graph/index.html) — [研究包](../10-aot-autograd/references/aot-joint-graph/research.json)（跨组件：10-aot-autograd）
+12. [Compiled Autograd：在 backward 时捕获更大的图](diagrams/compiled-autograd/index.html) — [研究包](references/compiled-autograd/research.json)
 
 研究版本：PyTorch 2.10.0+cpu，commit 449b1768410104d3ed79d3bcfe4ba1d65c7f22c0。

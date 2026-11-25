@@ -45,6 +45,10 @@ def build(out):
         require(p["source"] == expected, "source is not canonical")
         manifest = json.loads((ROOT / cid / "references" / slug / "research.json").read_text(encoding="utf-8"))
         require(manifest["status"] == "handoff-ready" and manifest["component"] == cid and manifest["slug"] == slug, "unready/mismatched research manifest")
+        require(type(p["order"]) is int and p["order"] > 0, "invalid article order")
+        if "series_component" in p or "series_order" in p:
+            require(p.get("series_component") in components and p["series_component"] != cid, "invalid cross-component series")
+            require(type(p.get("series_order")) is int and p["series_order"] > 0, "invalid cross-component order")
         posts[cid, slug] = p
     require(not out.exists(), "output must not exist; choose a fresh path")
     out.mkdir(parents=True)
@@ -55,6 +59,9 @@ def build(out):
         rows = sorted((p for (key, _), p in posts.items() if key == cid), key=lambda p: (p["order"], p["slug"]))
         component_cards.append(f'<div class="card"><p class="meta">{e(cid)}</p><h3><a href="{e(cid)}/">{e(c["title"])}</a></h3><p>{e(c["focus"])}</p><p class="meta">{len(rows)} 篇文章 · {"有研究内容" if rows else "待研究"}</p></div>')
         cards = []
+        related = [p for p in posts.values() if p.get("series_component") == cid]
+        orders = [p["order"] for p in rows] + [p["series_order"] for p in related]
+        require(len(orders) == len(set(orders)), f"duplicate series order in {cid}")
         for p in rows:
             slug = p["slug"]
             src = (ROOT / p["source"]).parent
@@ -68,8 +75,10 @@ def build(out):
                 require(f.is_file() and not f.is_symlink(), f"unsafe {f}")
                 (dst / "assets").mkdir(exist_ok=True)
                 shutil.copyfile(f, dst / "assets" / f.name)
-            cards.append(f'<div class="card"><p class="meta">第 {p["order"]:02d} 篇</p><h3><a href="{e(slug)}/">{e(p["title"])}</a></h3><p>{e(p["summary"])}</p></div>')
-        articles = "".join(cards) or '<p>此组件尚未有通过研究交接并登记的文章。</p>'
+            cards.append((p["order"], f'<div class="card"><p class="meta">第 {p["order"]:02d} 篇</p><h3><a href="{e(slug)}/">{e(p["title"])}</a></h3><p>{e(p["summary"])}</p></div>'))
+        for p in related:
+            cards.append((p["series_order"], f'<div class="card"><p class="meta">第 {p["series_order"]:02d} 篇 · 跨组件 {e(p["component"])}</p><h3><a href="../{e(p["component"])}/{e(p["slug"])}/">{e(p["title"])}</a></h3><p>{e(p["summary"])}</p></div>'))
+        articles = "".join(card for _, card in sorted(cards)) or '<p>此组件尚未有通过研究交接并登记的文章。</p>'
         write(out / cid / "index.html", page(c["title"], f'<nav><a href="../">← 全部组件</a></nav><p class="eyebrow">{e(cid)}</p><h1>{e(c["title"])}</h1><p class="dek">{e(c["focus"])}</p><h2>研究系列</h2><div class="grid">{articles}</div>'))
     write(out / "index.html", page("PyTorch Post", f'<p class="eyebrow">PYTORCH INTERNALS · RESEARCH LIBRARY</p><h1>深入 PyTorch</h1><p class="dek">从论文、版本固定的源码与可重复实验出发，逐层理解张量计算、自动微分、编译器与分布式训练。</p><div class="stat"><strong>{len(components)} 个核心组件</strong><strong>{len(posts)} 篇研究文章</strong></div><h2>组件与研究系列</h2><div class="grid">{"".join(component_cards)}</div>'))
     print(f"Built {len(components)} component indexes and {len(posts)} articles at {out}")

@@ -1,0 +1,111 @@
+{
+  "component": "05-autograd",
+  "slug": "compiled-autograd",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "sources": [
+    {
+      "id": "pytorch2",
+      "kind": "paper",
+      "relationship": "direct-framework",
+      "status": "verified",
+      "title": "Ansel et al., PyTorch 2: Faster Machine Learning Through Dynamic Python Bytecode Transformation and Graph Compilation",
+      "url": "https://docs.pytorch.org/assets/pytorch2-2.pdf",
+      "version": "ASPLOS 2024, DOI 10.1145/3620665.3640366",
+      "locator": "§3.9 AOTAutograd, pp. 7–8; §4.2 decompositions"
+    },
+    {
+      "id": "tutorial",
+      "kind": "official-doc",
+      "relationship": "official-doc",
+      "status": "verified",
+      "title": "Compiled Autograd tutorial",
+      "url": "https://docs.pytorch.org/tutorials/intermediate/compiled_autograd_tutorial.html",
+      "version": "Online documentation consulted 2026-11-25; not a 2.10 source pin",
+      "locator": "Overview; Capturing backward hooks; recompilation reasons"
+    },
+    {
+      "id": "engine",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Engine::execute compiled autograd branch",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/engine.cpp#L1354-L1366",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/engine.cpp:1354–1366"
+    },
+    {
+      "id": "hook",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "AutogradCompilerInstance.proxy_call_hook",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/_dynamo/compiled_autograd.py#L803-L835",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/_dynamo/compiled_autograd.py:803–835"
+    },
+    {
+      "id": "end",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "AutogradCompilerInstance.end_capture",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/_dynamo/compiled_autograd.py#L1025-L1050",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/_dynamo/compiled_autograd.py:1025–1050"
+    },
+    {
+      "id": "enable",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "_enable compiler registration",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/_dynamo/compiled_autograd.py#L1470-L1539",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/_dynamo/compiled_autograd.py:1470–1539"
+    }
+  ],
+  "claims": [
+    {
+      "id": "ca-1",
+      "kind": "implementation",
+      "statement": "Engine::execute can delegate to the registered compiled autograd callback; the Python capture instance creates proxies for hooks and supplies a captured graph to a compiler callback.",
+      "evidence": [
+        "engine",
+        "enable",
+        "hook",
+        "end"
+      ],
+      "limitation": "Private API version-specific; compiled reentry limitation in source.",
+      "status": "verified"
+    },
+    {
+      "id": "ca-2",
+      "kind": "implementation",
+      "statement": "Compiled Autograd targets larger runtime backward capture including hook logic beyond an individual AOT forward segment.",
+      "evidence": [
+        "tutorial",
+        "engine",
+        "hook"
+      ],
+      "limitation": "Tutorial describes potential graph breaks and recompilation; not a guarantee of full graph coverage.",
+      "status": "verified"
+    },
+    {
+      "id": "ca-3",
+      "kind": "measured",
+      "statement": "CPU test captured one backward FX graph containing call_hook and call_accumulate_grad; hooked gradients [12,18] match eager.",
+      "evidence": [
+        "hook",
+        "engine"
+      ],
+      "limitation": "Callback runs gm.forward directly; no Inductor code generation or speedup; no cross-forward graph-break test.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "experiment": {
+    "path": "05-autograd/minimal-implementation/compiled-autograd/demo.py",
+    "log": "05-autograd/experiments/compiled-autograd/cpu.log",
+    "blob_sha": "c3824396122bd0e147ea89bba87004ac4b54430d"
+  }
+}
