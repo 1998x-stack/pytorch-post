@@ -1,0 +1,6 @@
+Environment: Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; CPU float64
+Command: python 05-autograd/minimal-implementation/higher-order-hessian/demo.py
+Exit: 0
+gradient: [15.0, 8.0] Hessian: [[12.0, 1.0], [1.0, 2.0]]
+HVP reverse/reverse and forward/reverse: [53.0, 14.0] [53.0, 14.0]
+without create_graph: second derivative rejected

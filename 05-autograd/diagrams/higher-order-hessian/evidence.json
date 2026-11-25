@@ -1,0 +1,99 @@
+{
+  "component": "05-autograd",
+  "slug": "higher-order-hessian",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "sources": [
+    {
+      "id": "baydin",
+      "kind": "paper",
+      "relationship": "algorithm",
+      "status": "verified",
+      "title": "Baydin et al., Automatic Differentiation in Machine Learning: a Survey",
+      "url": "https://arxiv.org/abs/1502.05767",
+      "version": "arXiv:1502.05767; journal version JMLR 2018",
+      "locator": "§3 forward/reverse accumulation; higher-order AD"
+    },
+    {
+      "id": "pearlmutter",
+      "kind": "paper",
+      "relationship": "algorithm",
+      "status": "unverified",
+      "title": "Pearlmutter, Fast Exact Multiplication by the Hessian (1994)",
+      "url": "https://doi.org/10.1162/neco.1994.6.1.147",
+      "version": "Neural Computation 6(1), 147–160",
+      "locator": "Bibliographic record verified; full text not reviewed; historical pointer only"
+    },
+    {
+      "id": "grad",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "torch.autograd.grad create_graph and retain_graph",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/autograd/__init__.py#L375-L419",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/autograd/__init__.py:375–419"
+    },
+    {
+      "id": "hessian",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "torch.func.hessian composition",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/_functorch/eager_transforms.py#L1312-L1351",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/_functorch/eager_transforms.py:1312–1351"
+    },
+    {
+      "id": "jvp",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "JVP transform",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/_functorch/eager_transforms.py#L1080-L1125",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/_functorch/eager_transforms.py:1080–1125"
+    }
+  ],
+  "claims": [
+    {
+      "id": "hvp-1",
+      "kind": "deduction",
+      "statement": "For a twice continuously differentiable scalar f, H v is JVP of grad(f); reverse differentiation of grad(f) with seed v returns H^T v, equal by symmetry.",
+      "evidence": [
+        "baydin",
+        "hessian"
+      ],
+      "limitation": "Real C² scalar f, fixed seed independent of x.",
+      "status": "verified"
+    },
+    {
+      "id": "hvp-2",
+      "kind": "implementation",
+      "statement": "torch.func.hessian returns jacfwd(jacrev(func)); autograd.grad(create_graph=True) constructs derivative graph, while retain_graph concerns freeing the original graph.",
+      "evidence": [
+        "grad",
+        "hessian"
+      ],
+      "limitation": "Forward AD operator coverage may be incomplete.",
+      "status": "verified"
+    },
+    {
+      "id": "hvp-3",
+      "kind": "measured",
+      "statement": "For f=x₁³+x₁x₂+x₂² at (2,3), grad=[15,8], H=[[12,1],[1,2]], and both HVP routes yield [53,14]; default create_graph=False rejects this second derivative.",
+      "evidence": [
+        "grad",
+        "hessian",
+        "jvp"
+      ],
+      "limitation": "A polynomial CPU example only.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "experiment": {
+    "path": "05-autograd/minimal-implementation/higher-order-hessian/demo.py",
+    "log": "05-autograd/experiments/higher-order-hessian/cpu.log",
+    "blob_sha": "55661af07e1756d16a350659a7e4793d79b9b1bf"
+  }
+}
