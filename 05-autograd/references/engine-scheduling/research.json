@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "component": "05-autograd",
+  "slug": "engine-scheduling",
+  "status": "handoff-ready",
+  "scope": "PyTorch 2.10 eager CPU backward 的简化共享节点调度；排除 compiled autograd、重入、GPU stream 详细调度",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "blockers": [],
+  "sources": [
+    {
+      "id": "paszke-2017",
+      "kind": "paper",
+      "relationship": "direct",
+      "status": "verified",
+      "title": "Automatic differentiation in PyTorch — Paszke et al. (2017)",
+      "url": "https://openreview.net/references/pdf?id=BJJsrmfCZ",
+      "version": "2017 workshop draft",
+      "locator": "§1 Background; §3 Implementation; §3.1 Supporting in-place operations"
+    },
+    {
+      "id": "engine-execute",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Engine::execute",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/engine.cpp#L1288-L1387",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "root handling, GraphTask, compute_dependencies, queue root"
+    },
+    {
+      "id": "engine-evaluate",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Engine::evaluate_function",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/engine.cpp#L1130-L1235",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "release_variables, dependencies_, not_ready_, queue->push"
+    },
+    {
+      "id": "input-buffer",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "InputBuffer::add",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/input_buffer.cpp#L192-L216",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "CPU branch, InputBuffer::add"
+    },
+    {
+      "id": "accumulate-grad",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "AccumulateGrad_apply_impl",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/functions/accumulate_grad.cpp#L21-L50",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "guard, locking, accumulateGrad"
+    }
+  ],
+  "claims": [
+    {
+      "id": "eng-1",
+      "kind": "implementation",
+      "statement": "Engine::execute 创建 GraphTask 并计算依赖，单根 eager 路径可省略 GraphRoot。",
+      "evidence": [
+        "engine-execute"
+      ],
+      "limitation": "多根或 compiled autograd 分支不同。",
+      "status": "verified"
+    },
+    {
+      "id": "eng-2",
+      "kind": "implementation",
+      "statement": "evaluate_function 减少后继依赖计数，按输入槽位加入 InputBuffer，未就绪时存入 not_ready_，就绪时把 NodeTask 入队。",
+      "evidence": [
+        "engine-evaluate",
+        "input-buffer"
+      ],
+      "limitation": "简化图省略 exec_info、设备和 stream。",
+      "status": "verified"
+    },
+    {
+      "id": "eng-3",
+      "kind": "measured",
+      "statement": "a=2x、L=3a+4a，两个贡献以任一顺序汇聚得到 7，原生 a.grad=7、x.grad=14；新图再 backward 后 x.grad=16。",
+      "evidence": [
+        "input-buffer",
+        "accumulate-grad"
+      ],
+      "limitation": "顺序实验为 toy，原生断言不证明真实执行顺序。",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "runs": [
+    {
+      "id": "cpu-check",
+      "kind": "correctness",
+      "status": "passed",
+      "command": "python 05-autograd/minimal-implementation/engine-scheduling/demo.py",
+      "environment": "Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; CPU only; deterministic float64 inputs",
+      "raw_log": "05-autograd/experiments/engine-scheduling/cpu.log"
+    },
+    {
+      "id": "performance",
+      "kind": "benchmark",
+      "status": "not-applicable",
+      "reason": "本主题验证机制与数值正确性，不提出性能主张。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "papers",
+      "path": "05-autograd/papers/engine-scheduling.md"
+    },
+    {
+      "role": "source-analysis",
+      "path": "05-autograd/source-analysis/engine-scheduling.md"
+    },
+    {
+      "role": "algorithms",
+      "path": "05-autograd/algorithms/engine-scheduling.md"
+    },
+    {
+      "role": "implementation",
+      "path": "05-autograd/minimal-implementation/engine-scheduling/demo.py"
+    },
+    {
+      "role": "experiments",
+      "path": "05-autograd/experiments/engine-scheduling/cpu.log"
+    },
+    {
+      "role": "review",
+      "path": "05-autograd/references/engine-scheduling/review.md"
+    },
+    {
+      "role": "handoff",
+      "path": "05-autograd/references/engine-scheduling/handoff.md"
+    }
+  ]
+}

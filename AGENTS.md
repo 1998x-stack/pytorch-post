@@ -7,3 +7,5 @@
 5. 记录环境、依赖、随机种子、运行命令、原始输出；未运行标为 not verified。完整文章必须有 evidence.json、可访问的独立 SVG、静态检查、浏览器 QA；代码和 benchmark 按适用性执行。
 6. 修改前后运行 python scripts/validate_structure.py 和 python .pi/skills/pytorch-research/scripts/validate_research.py --repo .；修改 Research Skill 时运行 python -m unittest discover -s .pi/skills/pytorch-research/tests -v；检查差异，优先 PR，报告剩余问题。不自动合并有失败或未核验的内容，不宣称 Pages 已发布。
 7. Vendor 为固定快照；更新需新上游 SHA、逐文件哈希审计、兼容性检查及独立 PR。禁止从外部任意执行未经检查的脚本。
+
+8. 研究交接完成的文章只通过 catalog/posts.json 显式登记；按 docs/pages.md 构建、验证，禁止将草稿或未验证页面自动公开。发布必须等待实际 QA 成功；报告 Pages 设置与部署状态。

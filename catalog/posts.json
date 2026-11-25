@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "posts": [
+    {
+      "component": "05-autograd",
+      "slug": "reverse-mode-vjp",
+      "title": "反向自动微分：从链式法则到 VJP",
+      "summary": "为什么一次 backward 能计算成千上万个参数的梯度？从一条分叉的标量计算路径开始，推导向量–雅可比积，再连接 PyTorch 的反向图。",
+      "order": 1,
+      "source": "05-autograd/diagrams/reverse-mode-vjp/index.html",
+      "status": "handoff-ready"
+    },
+    {
+      "component": "05-autograd",
+      "slug": "engine-scheduling",
+      "title": "Autograd Engine：依赖计数与梯度汇聚",
+      "summary": "同一个中间结果被两个分支共享时，谁来决定 backward 的执行顺序？从依赖计数到 GraphTask、InputBuffer 与 ReadyQueue。",
+      "order": 2,
+      "source": "05-autograd/diagrams/engine-scheduling/index.html",
+      "status": "handoff-ready"
+    },
+    {
+      "component": "05-autograd",
+      "slug": "saved-tensors-versioning",
+      "title": "SavedVariable：保存值、版本计数与原地修改",
+      "summary": "为什么 detach() 之后修改张量仍可能让 backward 报错？理解保存的前向值、共享版本计数和反向资源生命周期。",
+      "order": 3,
+      "source": "05-autograd/diagrams/saved-tensors-versioning/index.html",
+      "status": "handoff-ready"
+    }
+  ]
+}

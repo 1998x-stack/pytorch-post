@@ -1,6 +1,6 @@
 # PyTorch Post
 
-面向 PyTorch 内核和 AI Infrastructure 的研究知识库：论文 → 源码 → 算法 → 最小实现 → 实验 → 基准 → 图解。所有组件当前均为 scaffold，不是已完成教程。
+面向 PyTorch 内核和 AI Infrastructure 的研究知识库：论文 → 源码 → 算法 → 最小实现 → 实验 → 基准 → 图解。首批 Autograd 三篇研究已完成交接，其他组件仍为研究骨架。
 
 ## 组件索引
 
@@ -46,4 +46,10 @@ python .pi/skills/pytorch-research/scripts/validate_research.py --repo .
 python -m unittest discover -s .pi/skills/pytorch-research/tests -v
 ```
 
-不承诺已部署 GitHub Pages；实际文章在对应组件的 diagrams/<slug>/ 中产出并经过 QA。
+## GitHub Pages
+
+- [站点发布与首次开启](docs/pages.md)
+- [Autograd 系列](05-autograd/README.md)
+- [文章注册表](catalog/posts.json)
+
+文章由组件 diagrams/<slug>/ 源文件构建；是否上线以 GitHub Actions 实际部署状态为准。

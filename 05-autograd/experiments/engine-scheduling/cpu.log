@@ -1,0 +1,7 @@
+Environment: Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; CPU only; deterministic float64 inputs
+Command: python 05-autograd/minimal-implementation/engine-scheduling/demo.py
+Exit: 0
+toy [3, 4] [(1, 3), (0, 7)] 14
+toy [4, 3] [(1, 4), (0, 7)] 14
+native 7.0 14.0
+second backward on a fresh graph: 16.0
