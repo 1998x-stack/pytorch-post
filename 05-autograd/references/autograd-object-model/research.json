@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "component": "05-autograd",
+  "slug": "autograd-object-model",
+  "status": "handoff-ready",
+  "scope": "PyTorch 2.10 eager CPU，普通实数 Tensor 与多输出 unbind；不覆盖 view rebase、forward AD、编译或特殊 Tensor subclass。",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "blockers": [],
+  "sources": [
+    {
+      "id": "paszke-2017",
+      "kind": "paper",
+      "relationship": "direct",
+      "status": "verified",
+      "title": "Automatic differentiation in PyTorch — Paszke et al. (2017)",
+      "url": "https://openreview.net/references/pdf?id=BJJsrmfCZ",
+      "version": "2017 workshop draft",
+      "locator": "§1, §3; historical framework design (not evidence for modern fields or codegen)"
+    },
+    {
+      "id": "tensor-meta",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "TensorImpl: optional AutogradMetaInterface",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/c10/core/TensorImpl.h#L2894-L2914",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "c10/core/TensorImpl.h:2894–2914"
+    },
+    {
+      "id": "meta",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "AutogradMeta fields and output_nr",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/variable.h#L227-L305",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/variable.h:227–305"
+    },
+    {
+      "id": "canonical-edge",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Leaf accumulator and gradient_edge",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/variable.cpp#L289-L335",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/variable.cpp:289–335"
+    },
+    {
+      "id": "edge",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Edge definition",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/edge.h#L13-L39",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/edge.h:13–39"
+    },
+    {
+      "id": "node",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Node outgoing edges",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/function.h#L298-L325",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/function.h:298–325"
+    }
+  ],
+  "claims": [
+    {
+      "id": "obj-1",
+      "kind": "implementation",
+      "statement": "TensorImpl can hold an optional AutogradMetaInterface; AutogradMeta holds grad_, grad_fn_, weak grad_accumulator_ and output_nr_.",
+      "evidence": [
+        "tensor-meta",
+        "meta"
+      ],
+      "limitation": "Optional metadata is not a separately allocated object for every Tensor.",
+      "status": "verified"
+    },
+    {
+      "id": "obj-2",
+      "kind": "implementation",
+      "statement": "Canonical gradient_edge uses grad_fn and output_nr for interior tensors, or a leaf gradient accumulator with slot 0; Edge stores target Node and input_nr.",
+      "evidence": [
+        "canonical-edge",
+        "edge",
+        "node"
+      ],
+      "limitation": "Only differentiable relevant tensors; view history may be rebased.",
+      "status": "verified"
+    },
+    {
+      "id": "obj-3",
+      "kind": "measured",
+      "statement": "unbind returns two outputs sharing UnbindBackward0 with slots 0 and 1; retaining a.grad yields [3,4] and leaf x.grad [6,8].",
+      "evidence": [
+        "meta",
+        "edge",
+        "canonical-edge"
+      ],
+      "limitation": "One eager CPU example; no ownership or allocator profiling.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "runs": [
+    {
+      "id": "cpu-check",
+      "kind": "correctness",
+      "status": "passed",
+      "command": "python 05-autograd/minimal-implementation/autograd-object-model/demo.py",
+      "environment": "Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; deterministic float64 CPU inputs",
+      "raw_log": "05-autograd/experiments/autograd-object-model/cpu.log"
+    },
+    {
+      "id": "performance",
+      "kind": "benchmark",
+      "status": "not-applicable",
+      "reason": "研究机制和数值正确性，无性能主张。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "papers",
+      "path": "05-autograd/papers/autograd-object-model.md"
+    },
+    {
+      "role": "source-analysis",
+      "path": "05-autograd/source-analysis/autograd-object-model.md"
+    },
+    {
+      "role": "algorithms",
+      "path": "05-autograd/algorithms/autograd-object-model.md"
+    },
+    {
+      "role": "implementation",
+      "path": "05-autograd/minimal-implementation/autograd-object-model/demo.py"
+    },
+    {
+      "role": "experiments",
+      "path": "05-autograd/experiments/autograd-object-model/cpu.log"
+    },
+    {
+      "role": "review",
+      "path": "05-autograd/references/autograd-object-model/review.md"
+    },
+    {
+      "role": "handoff",
+      "path": "05-autograd/references/autograd-object-model/handoff.md"
+    }
+  ]
+}

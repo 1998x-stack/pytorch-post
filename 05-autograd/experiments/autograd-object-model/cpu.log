@@ -1,0 +1,7 @@
+Environment: Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; deterministic float64 CPU inputs
+Command: python 05-autograd/minimal-implementation/autograd-object-model/demo.py
+Exit: 0
+leaf: True None
+shared backward node: UnbindBackward0 slots: 0 1
+consumer edge: 0 1
+a.grad: [3.0, 4.0] x.grad: [6.0, 8.0]

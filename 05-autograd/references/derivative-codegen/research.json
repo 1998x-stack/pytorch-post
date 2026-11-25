@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "component": "05-autograd",
+  "slug": "derivative-codegen",
+  "status": "handoff-ready",
+  "scope": "PyTorch 2.10 eager CPU dense real mul.Tensor；静态代码生成阅读与运行时数值验证，不重新编译 PyTorch。",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "blockers": [],
+  "sources": [
+    {
+      "id": "paszke-2017",
+      "kind": "paper",
+      "relationship": "direct",
+      "status": "verified",
+      "title": "Automatic differentiation in PyTorch — Paszke et al. (2017)",
+      "url": "https://openreview.net/references/pdf?id=BJJsrmfCZ",
+      "version": "2017 workshop draft",
+      "locator": "§1, §3; historical framework design (not evidence for modern fields or codegen)"
+    },
+    {
+      "id": "schema",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "ATen mul.Tensor schema",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/aten/src/ATen/native/native_functions.yaml#L4301-L4306",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "aten/src/ATen/native/native_functions.yaml:4301–4306"
+    },
+    {
+      "id": "rules",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "derivatives.yaml VJP rules",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/tools/autograd/derivatives.yaml#L1212-L1215",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "tools/autograd/derivatives.yaml:1212–1215"
+    },
+    {
+      "id": "gen",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "gen_autograd pipeline",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/tools/autograd/gen_autograd.py#L59-L95",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "tools/autograd/gen_autograd.py:59–95"
+    },
+    {
+      "id": "wrapper",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Autograd wrapper grad_fn / next edges",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/tools/autograd/gen_variable_type.py#L608-L634",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "tools/autograd/gen_variable_type.py:608–634"
+    },
+    {
+      "id": "generated",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Backward derivative template",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/tools/autograd/gen_autograd_functions.py#L185-L191",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "tools/autograd/gen_autograd_functions.py:185–191"
+    },
+    {
+      "id": "manual",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "mul_tensor_backward",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/FunctionsManual.cpp#L602-L608",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/FunctionsManual.cpp:602–608"
+    },
+    {
+      "id": "reduce",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "InputMetadata::reduce_grad",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/input_metadata.cpp#L137-L141",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/input_metadata.cpp:137–141"
+    },
+    {
+      "id": "validate",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Engine validates and reduces gradient",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/engine.cpp#L935-L946",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/engine.cpp:935–946"
+    }
+  ],
+  "claims": [
+    {
+      "id": "cg-1",
+      "kind": "implementation",
+      "statement": "gen_autograd loads derivatives.yaml and calls generators for VariableType and Functions; generated derivative templates assign gradients for needed inputs.",
+      "evidence": [
+        "gen",
+        "wrapper",
+        "generated",
+        "rules"
+      ],
+      "limitation": "Not every op uses generated explicit derivatives; composite or manual paths exist.",
+      "status": "verified"
+    },
+    {
+      "id": "cg-2",
+      "kind": "implementation",
+      "statement": "mul.Tensor reverse rules use mul_tensor_backward; the helper multiplies by conjugate of the other operand and handles real/complex conversion; engine metadata handles compatible broadcast reduction.",
+      "evidence": [
+        "rules",
+        "manual",
+        "reduce",
+        "validate"
+      ],
+      "limitation": "Article derivation is real-valued; complex details not derived.",
+      "status": "verified"
+    },
+    {
+      "id": "cg-3",
+      "kind": "measured",
+      "statement": "For x shape (2,1), y shape (1,3), explicit g shape (2,3), native gradients are [[32],[77]] and [[14,19,24]], matching manual reduction; gradcheck passes.",
+      "evidence": [
+        "rules",
+        "manual",
+        "reduce"
+      ],
+      "limitation": "CPU sample and installed binary only; source generator was not rebuilt.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "runs": [
+    {
+      "id": "cpu-check",
+      "kind": "correctness",
+      "status": "passed",
+      "command": "python 05-autograd/minimal-implementation/derivative-codegen/demo.py",
+      "environment": "Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; deterministic float64 CPU inputs",
+      "raw_log": "05-autograd/experiments/derivative-codegen/cpu.log"
+    },
+    {
+      "id": "performance",
+      "kind": "benchmark",
+      "status": "not-applicable",
+      "reason": "研究机制和数值正确性，无性能主张。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "papers",
+      "path": "05-autograd/papers/derivative-codegen.md"
+    },
+    {
+      "role": "source-analysis",
+      "path": "05-autograd/source-analysis/derivative-codegen.md"
+    },
+    {
+      "role": "algorithms",
+      "path": "05-autograd/algorithms/derivative-codegen.md"
+    },
+    {
+      "role": "implementation",
+      "path": "05-autograd/minimal-implementation/derivative-codegen/demo.py"
+    },
+    {
+      "role": "experiments",
+      "path": "05-autograd/experiments/derivative-codegen/cpu.log"
+    },
+    {
+      "role": "review",
+      "path": "05-autograd/references/derivative-codegen/review.md"
+    },
+    {
+      "role": "handoff",
+      "path": "05-autograd/references/derivative-codegen/handoff.md"
+    }
+  ]
+}

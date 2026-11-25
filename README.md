@@ -1,6 +1,6 @@
 # PyTorch Post
 
-面向 PyTorch 内核和 AI Infrastructure 的研究知识库：论文 → 源码 → 算法 → 最小实现 → 实验 → 基准 → 图解。首批 Autograd 三篇研究已完成交接，其他组件仍为研究骨架。
+面向 PyTorch 内核和 AI Infrastructure 的研究知识库：论文 → 源码 → 算法 → 最小实现 → 实验 → 基准 → 图解。Autograd 前两批六篇研究已完成交接，其他组件仍为研究骨架。
 
 ## 组件索引
 

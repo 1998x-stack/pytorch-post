@@ -27,6 +27,33 @@
       "order": 3,
       "source": "05-autograd/diagrams/saved-tensors-versioning/index.html",
       "status": "handoff-ready"
+    },
+    {
+      "component": "05-autograd",
+      "slug": "autograd-object-model",
+      "title": "Autograd 对象模型：Tensor、AutogradMeta、Node 与 Edge",
+      "summary": "Tensor 的 grad_fn 究竟指向什么？以多输出算子为例，分清张量元数据、反向节点、梯度槽位和叶子梯度累积器。",
+      "order": 4,
+      "source": "05-autograd/diagrams/autograd-object-model/index.html",
+      "status": "handoff-ready"
+    },
+    {
+      "component": "05-autograd",
+      "slug": "derivative-codegen",
+      "title": "derivatives.yaml：从导数规则到自动生成反向算子",
+      "summary": "PyTorch 并不是运行时对任意 C++ kernel 做符号微分。以 mul.Tensor 为例，追踪 schema、导数规则、代码生成以及广播梯度归约。",
+      "order": 5,
+      "source": "05-autograd/diagrams/derivative-codegen/index.html",
+      "status": "handoff-ready"
+    },
+    {
+      "component": "05-autograd",
+      "slug": "custom-autograd-function",
+      "title": "Custom Autograd Function：定义自己的 VJP 与二阶梯度",
+      "summary": "如何让自定义计算参与 PyTorch 的反向引擎？从 apply、ctx、forward/backward 到 gradcheck 与 gradgradcheck，区分正确规则和错误规则。",
+      "order": 6,
+      "source": "05-autograd/diagrams/custom-autograd-function/index.html",
+      "status": "handoff-ready"
     }
   ]
 }
