@@ -1,0 +1,152 @@
+{
+  "component": "02-tensor-storage",
+  "slug": "tensor-storage-object-model",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "sources": [
+    {
+      "id": "pytorch-2019",
+      "kind": "paper",
+      "relationship": "direct-framework",
+      "status": "verified",
+      "title": "Paszke et al., PyTorch: An Imperative Style, High-Performance Deep Learning Library",
+      "url": "https://proceedings.neurips.cc/paper/2019/file/bdbca288fee7f92f2bfa9f7012727740-Paper.pdf",
+      "version": "NeurIPS 2019",
+      "locator": "§5.1, p.5: C++ tensor implementation; §4.3 mutation/versioning. Historical context only."
+    },
+    {
+      "id": "storage-doc",
+      "kind": "official-doc",
+      "relationship": "official-doc",
+      "status": "verified",
+      "title": "torch.Storage",
+      "url": "https://docs.pytorch.org/docs/stable/storage.html",
+      "version": "online documentation consulted 2026-11-25 (not version-pinned)",
+      "locator": "Storage, offset and sharing"
+    },
+    {
+      "id": "views-doc",
+      "kind": "official-doc",
+      "relationship": "official-doc",
+      "status": "verified",
+      "title": "Tensor Views",
+      "url": "https://docs.pytorch.org/docs/stable/tensor_view.html",
+      "version": "online documentation consulted 2026-11-25 (not version-pinned)",
+      "locator": "Shared storage, basic/advanced indexing, reshape caveat"
+    },
+    {
+      "id": "tensor-handle",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "TensorBase intrusive pointer",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/aten/src/ATen/core/TensorBase.h#L954-L955",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "aten/src/ATen/core/TensorBase.h:954–955"
+    },
+    {
+      "id": "tensor-storage",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "TensorImpl storage field",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/c10/core/TensorImpl.h#L2887-L2893",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "c10/core/TensorImpl.h:2887–2893"
+    },
+    {
+      "id": "tensor-layout",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "TensorImpl metadata fields",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/c10/core/TensorImpl.h#L2923-L2934",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "c10/core/TensorImpl.h:2923–2934"
+    },
+    {
+      "id": "storage-handle",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Storage intrusive pointer",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/c10/core/Storage.h#L221-L223",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "c10/core/Storage.h:221–223"
+    },
+    {
+      "id": "storage-impl",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "StorageImpl data pointer and byte length",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/c10/core/StorageImpl.h#L337-L341",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "c10/core/StorageImpl.h:337–341"
+    },
+    {
+      "id": "data-offset",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "TensorImpl::data_impl",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/c10/core/TensorImpl.h#L1670-L1693",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "c10/core/TensorImpl.h:1670–1693"
+    },
+    {
+      "id": "alias",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "as_strided_tensorimpl creates view",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/aten/src/ATen/native/TensorShape.cpp#L1409-L1421",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "aten/src/ATen/native/TensorShape.cpp:1409–1421"
+    }
+  ],
+  "claims": [
+    {
+      "id": "obj-1",
+      "kind": "implementation",
+      "statement": "TensorBase holds an intrusive pointer to TensorImpl; TensorImpl contains Storage and layout metadata, while Storage points to StorageImpl containing DataPtr and byte length.",
+      "evidence": [
+        "tensor-handle",
+        "tensor-storage",
+        "tensor-layout",
+        "storage-handle",
+        "storage-impl"
+      ],
+      "limitation": "Ordinary storage-backed dense tensors; not all layouts expose storage.",
+      "status": "verified"
+    },
+    {
+      "id": "obj-2",
+      "kind": "implementation",
+      "statement": "A strided view can create a new TensorImpl sharing Storage; a nonempty ordinary tensor data pointer includes byte offset = element_size × storage_offset.",
+      "evidence": [
+        "alias",
+        "data-offset"
+      ],
+      "limitation": "Empty tensors and specialized backends need separate treatment.",
+      "status": "verified"
+    },
+    {
+      "id": "obj-3",
+      "kind": "measured",
+      "statement": "A 3×4 int64 base and its 3×2 slice share 96 storage bytes; clone owns 48 bytes; slice mutation changes base but not clone.",
+      "evidence": [
+        "storage-doc",
+        "views-doc",
+        "alias"
+      ],
+      "limitation": "One nonempty CPU sample; pointer equality is not a universal ownership test.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "experiment": {
+    "path": "02-tensor-storage/minimal-implementation/tensor-storage-object-model/demo.py",
+    "log": "02-tensor-storage/experiments/tensor-storage-object-model/cpu.log",
+    "blob_sha": "1fca167aeb40ab7080c53ed8fa5b2798e715d79b"
+  }
+}

@@ -1,0 +1,7 @@
+Environment: Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; OMP_NUM_THREADS=1; CPU int64
+Command: OMP_NUM_THREADS=1 python 02-tensor-storage/minimal-implementation/shape-stride-offset/demo.py
+Exit: 0
+(2, 3) (4, 1) 1 indices: [1, 2, 3, 5, 6, 7] values: [[1, 2, 3], [5, 6, 7]]
+(3, 2) (1, 4) 1 indices: [1, 5, 2, 6, 3, 7] values: [[1, 5], [2, 6], [3, 7]]
+(2, 3) (0, 1) 2 indices: [2, 3, 4, 2, 3, 4] values: [[2, 3, 4], [2, 3, 4]]
+out-of-bounds rejected
