@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "component": "05-autograd",
+  "slug": "replace-topic",
+  "status": "draft",
+  "scope": "Replace with precise question and version scope",
+  "pytorch_commit": "",
+  "blockers": [],
+  "sources": [],
+  "claims": [],
+  "runs": [
+    {
+      "id": "correctness",
+      "kind": "correctness",
+      "status": "not-run",
+      "reason": "Not yet implemented"
+    }
+  ],
+  "artifacts": []
+}

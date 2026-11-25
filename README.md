@@ -36,11 +36,14 @@
 
 - [AGENTS.md](AGENTS.md)：研究、证据、去重、发布规则。
 - [组件清单](catalog/components.json)：稳定 ID、范围、候选引用及状态。
+- [PyTorch Research Skill](.pi/skills/pytorch-research/SKILL.md)：论文、源码、算法、实验与反思评审；先研究，再交接可视化。
 - [Olah Skill](.pi/skills/olah-style-paper-posts/SKILL.md) 与 [集成指南](docs/skill-integration.md)。
 - [结构评审](docs/reviews/bootstrap-review.md)。
 
 ```bash
 python scripts/validate_structure.py
-````
+python .pi/skills/pytorch-research/scripts/validate_research.py --repo .
+python -m unittest discover -s .pi/skills/pytorch-research/tests -v
+```
 
 不承诺已部署 GitHub Pages；实际文章在对应组件的 diagrams/<slug>/ 中产出并经过 QA。
