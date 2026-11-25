@@ -1,0 +1,112 @@
+{
+  "component": "05-autograd",
+  "slug": "activation-checkpoint",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "sources": [
+    {
+      "id": "chen",
+      "kind": "paper",
+      "relationship": "algorithm",
+      "status": "verified",
+      "title": "Chen et al., Training Deep Nets with Sublinear Memory Cost",
+      "url": "https://arxiv.org/abs/1604.06174",
+      "version": "arXiv:1604.06174 (2016)",
+      "locator": "§4.3, Eq. (1); §5 experiment scope"
+    },
+    {
+      "id": "reentrant",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "CheckpointFunction forward/backward",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/utils/checkpoint.py#L228-L315",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/utils/checkpoint.py:228–315"
+    },
+    {
+      "id": "api",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "checkpoint variant documentation",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/utils/checkpoint.py#L349-L420",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/utils/checkpoint.py:349–420"
+    },
+    {
+      "id": "early",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "_recomputation_hook early stop",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/utils/checkpoint.py#L1081-L1120",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/utils/checkpoint.py:1081–1120"
+    },
+    {
+      "id": "hooks",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "_checkpoint_hook pack/unpack",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/utils/checkpoint.py#L1142-L1195",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/utils/checkpoint.py:1142–1195"
+    },
+    {
+      "id": "rng",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "Non-reentrant generator and RNG restoration",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/utils/checkpoint.py#L1550-L1615",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/utils/checkpoint.py:1550–1615"
+    }
+  ],
+  "claims": [
+    {
+      "id": "ckpt-1",
+      "kind": "paper",
+      "statement": "For equal-sized sequential layers split into k segments, Chen et al. derive activation storage O(n/k+k), minimized in order at k≈sqrt(n).",
+      "evidence": [
+        "chen"
+      ],
+      "limitation": "Idealized equal-size sequential activation model, not measured total GPU memory or universal guarantee.",
+      "status": "verified"
+    },
+    {
+      "id": "ckpt-2",
+      "kind": "implementation",
+      "statement": "Reentrant uses a custom Function, no_grad forward and whole-function recomputation; non-reentrant uses saved tensor hooks and can stop when needed tensors are restored. RNG preservation forks/restores CPU and supported device state.",
+      "evidence": [
+        "reentrant",
+        "api",
+        "early",
+        "hooks",
+        "rng"
+      ],
+      "limitation": "Early-stop, device, stochastic and mutable-state constraints matter.",
+      "status": "verified"
+    },
+    {
+      "id": "ckpt-3",
+      "kind": "measured",
+      "statement": "Plain, non-reentrant and reentrant produce [32,108] gradients. The non-reentrant trace ends at a second enter, reentrant reaches second exit; fixed-seed Dropout output, gradient and CPU RNG state match baseline.",
+      "evidence": [
+        "reentrant",
+        "early",
+        "hooks",
+        "rng"
+      ],
+      "limitation": "Specific block and CPU seed 17; not an actual memory or timing benchmark.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "experiment": {
+    "path": "05-autograd/minimal-implementation/activation-checkpoint/demo.py",
+    "log": "05-autograd/experiments/activation-checkpoint/cpu.log",
+    "blob_sha": "70237005bd7d04491c7688f854db5f41b0bc69bc"
+  }
+}

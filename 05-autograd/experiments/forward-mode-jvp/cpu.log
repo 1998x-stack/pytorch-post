@@ -1,0 +1,6 @@
+Environment: Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; CPU float64
+Command: python 05-autograd/minimal-implementation/forward-mode-jvp/demo.py
+Exit: 0
+primal: [6.0, 5.0] JVP: [22.0, 9.0]
+Jacobian: [[3.0, 2.0], [1.0, 1.0]] JVP matches: [22.0, 9.0]
+dual tangent cleared after exit

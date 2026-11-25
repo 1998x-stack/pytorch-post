@@ -1,6 +1,6 @@
 # 自动微分
 
-状态：前两批六篇研究包与可视化已编写；发布以 Pages QA 和实际部署为准。
+状态：前三批九篇研究包与可视化已编写；发布以 Pages QA 和实际部署为准。
 
 研究问题：反向模式、计算图、梯度累积与版本计数。
 
@@ -24,5 +24,9 @@
 4. [Autograd 对象模型：Tensor、AutogradMeta、Node 与 Edge](diagrams/autograd-object-model/index.html) — [研究包](references/autograd-object-model/research.json)
 5. [derivatives.yaml：从导数规则到自动生成反向算子](diagrams/derivative-codegen/index.html) — [研究包](references/derivative-codegen/research.json)
 6. [Custom Autograd Function：定义自己的 VJP 与二阶梯度](diagrams/custom-autograd-function/index.html) — [研究包](references/custom-autograd-function/research.json)
+
+7. [Forward-mode AD：Dual Tensor 与 JVP](diagrams/forward-mode-jvp/index.html) — [研究包](references/forward-mode-jvp/research.json)
+8. [高阶自动微分：Hessian、HVP 与 create_graph](diagrams/higher-order-hessian/index.html) — [研究包](references/higher-order-hessian/research.json)
+9. [Activation Checkpoint：重计算、早停与 RNG](diagrams/activation-checkpoint/index.html) — [研究包](references/activation-checkpoint/research.json)
 
 研究版本：PyTorch 2.10.0+cpu，commit 449b1768410104d3ed79d3bcfe4ba1d65c7f22c0。

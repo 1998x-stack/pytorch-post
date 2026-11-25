@@ -54,6 +54,33 @@
       "order": 6,
       "source": "05-autograd/diagrams/custom-autograd-function/index.html",
       "status": "handoff-ready"
+    },
+    {
+      "component": "05-autograd",
+      "slug": "forward-mode-jvp",
+      "title": "Forward-mode AD：Dual Tensor 与 JVP",
+      "summary": "从切向量传播理解前向模式：一次计算得到 Jv，而非反向模式的 Jᵀu。",
+      "order": 7,
+      "source": "05-autograd/diagrams/forward-mode-jvp/index.html",
+      "status": "handoff-ready"
+    },
+    {
+      "component": "05-autograd",
+      "slug": "higher-order-hessian",
+      "title": "高阶自动微分：Hessian、HVP 与 create_graph",
+      "summary": "为什么不必构造 n×n Hessian 也能计算曲率方向？对梯度再次微分，比较 reverse-over-reverse 与 forward-over-reverse。",
+      "order": 8,
+      "source": "05-autograd/diagrams/higher-order-hessian/index.html",
+      "status": "handoff-ready"
+    },
+    {
+      "component": "05-autograd",
+      "slug": "activation-checkpoint",
+      "title": "Activation Checkpoint：重计算、早停与 RNG",
+      "summary": "用计算换取激活存储：从分段模型的 O(√n) 推导，到 PyTorch reentrant 与 non-reentrant 的真实执行差异。",
+      "order": 9,
+      "source": "05-autograd/diagrams/activation-checkpoint/index.html",
+      "status": "handoff-ready"
     }
   ]
 }

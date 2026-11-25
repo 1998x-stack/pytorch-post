@@ -1,0 +1,100 @@
+{
+  "component": "05-autograd",
+  "slug": "forward-mode-jvp",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "sources": [
+    {
+      "id": "baydin",
+      "kind": "paper",
+      "relationship": "algorithm",
+      "status": "verified",
+      "title": "Baydin et al., Automatic Differentiation in Machine Learning: a Survey",
+      "url": "https://arxiv.org/abs/1502.05767",
+      "version": "arXiv:1502.05767; journal version JMLR 2018",
+      "locator": "§3 forward/reverse accumulation; higher-order AD"
+    },
+    {
+      "id": "dual",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "forward_ad.make_dual / enter / exit",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/autograd/forward_ad.py#L23-L130",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/autograd/forward_ad.py:23–130"
+    },
+    {
+      "id": "unpack",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "unpack_dual and dual_level",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/autograd/forward_ad.py#L141-L197",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/autograd/forward_ad.py:141–197"
+    },
+    {
+      "id": "jvp",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "functorch JVP transform",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/_functorch/eager_transforms.py#L1080-L1125",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/_functorch/eager_transforms.py:1080–1125"
+    },
+    {
+      "id": "fw-meta",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "AutogradMeta forward gradient",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/csrc/autograd/variable.h#L234-L243",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/csrc/autograd/variable.h:234–243"
+    }
+  ],
+  "claims": [
+    {
+      "id": "jvp-1",
+      "kind": "deduction",
+      "statement": "For f: R^n→R^m, a tangent v∈R^n propagates as Jv∈R^m; a VJP instead maps an output cotangent back to input space.",
+      "evidence": [
+        "baydin"
+      ],
+      "limitation": "Real differentiable functions; no complexity claim for arbitrary kernels.",
+      "status": "verified"
+    },
+    {
+      "id": "jvp-2",
+      "kind": "implementation",
+      "statement": "make_dual embeds a tangent and aliases the primal; unpack_dual retrieves primal/tangent; exiting a dual level removes its associated gradients. torch.func.jvp constructs duals and unpacks outputs.",
+      "evidence": [
+        "dual",
+        "unpack",
+        "jvp",
+        "fw-meta"
+      ],
+      "limitation": "The low-level API supports only one dual level; transforms have additional nesting logic.",
+      "status": "verified"
+    },
+    {
+      "id": "jvp-3",
+      "kind": "measured",
+      "statement": "At x=[2,3] and v=[4,5], f(x)=[6,5], Jv=[22,9]; torch.func.jvp agrees with jacrev(f) @ v, and unpack after exiting returns no tangent.",
+      "evidence": [
+        "dual",
+        "unpack",
+        "jvp"
+      ],
+      "limitation": "Small deterministic CPU example.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "experiment": {
+    "path": "05-autograd/minimal-implementation/forward-mode-jvp/demo.py",
+    "log": "05-autograd/experiments/forward-mode-jvp/cpu.log",
+    "blob_sha": "9619800f9ff514cbc7b3b933697074580f738ae3"
+  }
+}
