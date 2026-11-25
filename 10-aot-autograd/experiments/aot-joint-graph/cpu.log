@@ -1,0 +1,19 @@
+Environment: Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; OMP_NUM_THREADS=1; CUDA unavailable
+Command: OMP_NUM_THREADS=1 python 10-aot-autograd/minimal-implementation/aot-joint-graph/demo.py
+Exit: 0
+forward FX graph:
+def forward(self, primals_1):
+    sin = torch.ops.aten.sin.default(primals_1)
+    mul = torch.ops.aten.mul.Tensor(sin, primals_1)
+    sum_1 = torch.ops.aten.sum.default(mul);  mul = None
+    return (sum_1, primals_1, sin)
+backward FX graph:
+def forward(self, primals_1, sin, tangents_1):
+    expand = torch.ops.aten.expand.default(tangents_1, [2]);  tangents_1 = None
+    mul_1 = torch.ops.aten.mul.Tensor(expand, sin);  sin = None
+    mul_2 = torch.ops.aten.mul.Tensor(expand, primals_1);  expand = None
+    cos = torch.ops.aten.cos.default(primals_1);  primals_1 = None
+    mul_3 = torch.ops.aten.mul.Tensor(mul_2, cos);  mul_2 = cos = None
+    add = torch.ops.aten.add.Tensor(mul_1, mul_3);  mul_1 = mul_3 = None
+    return (add,)
+forward/backward captured; eager gradient match: True

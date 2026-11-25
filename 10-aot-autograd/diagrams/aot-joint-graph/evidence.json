@@ -1,0 +1,79 @@
+{
+  "component": "10-aot-autograd",
+  "slug": "aot-joint-graph",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "sources": [
+    {
+      "id": "pytorch2",
+      "kind": "paper",
+      "relationship": "direct-framework",
+      "status": "verified",
+      "title": "Ansel et al., PyTorch 2: Faster Machine Learning Through Dynamic Python Bytecode Transformation and Graph Compilation",
+      "url": "https://docs.pytorch.org/assets/pytorch2-2.pdf",
+      "version": "ASPLOS 2024, DOI 10.1145/3620665.3640366",
+      "locator": "§3.9 AOTAutograd, pp. 7–8; §4.2 decompositions"
+    },
+    {
+      "id": "aot",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "aot_function interface, joint trace and partition",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/_functorch/aot_autograd.py#L713-L770",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/_functorch/aot_autograd.py:713–770"
+    },
+    {
+      "id": "partition",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "default_partition and stashed activations",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/_functorch/partitioners.py#L1013-L1050",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/_functorch/partitioners.py:1013–1050"
+    }
+  ],
+  "claims": [
+    {
+      "id": "aot-1",
+      "kind": "paper",
+      "statement": "AOTAutograd captures joint forward/backward graphs; functionalization and decomposition simplify graph representation, and partitioning separates forward and backward.",
+      "evidence": [
+        "pytorch2",
+        "aot"
+      ],
+      "limitation": "Historical 2024 design and 2.10 API; exact transformation details depend on path and options.",
+      "status": "verified"
+    },
+    {
+      "id": "aot-2",
+      "kind": "implementation",
+      "statement": "aot_function defaults to default_partition; stashed tensors are forward outputs consumed by the backward graph. Min-cut rematerialization is a separate configurable policy.",
+      "evidence": [
+        "aot",
+        "partition",
+        "pytorch2"
+      ],
+      "limitation": "The example uses default partition, not a measured or executed min-cut policy.",
+      "status": "verified"
+    },
+    {
+      "id": "aot-3",
+      "kind": "measured",
+      "statement": "For f(x)=sum(x*sin(x)), the captured forward FX returns sum, primal and sin; backward graph has primal, sin and tangent inputs. CPU gradient matches eager.",
+      "evidence": [
+        "aot",
+        "partition"
+      ],
+      "limitation": "Single fixed-shape real CPU example; callbacks return executable FX, not optimized machine code.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "experiment": {
+    "path": "10-aot-autograd/minimal-implementation/aot-joint-graph/demo.py",
+    "log": "10-aot-autograd/experiments/aot-joint-graph/cpu.log",
+    "blob_sha": "ca707285f8daf0cc99242346f47f8fb27aa99874"
+  }
+}

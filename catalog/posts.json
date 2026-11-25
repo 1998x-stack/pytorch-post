@@ -81,6 +81,35 @@
       "order": 9,
       "source": "05-autograd/diagrams/activation-checkpoint/index.html",
       "status": "handoff-ready"
+    },
+    {
+      "component": "05-autograd",
+      "slug": "autograd-concurrency",
+      "title": "Autograd 并发：ReadyQueue、重入与 CUDA Stream",
+      "summary": "反向传播的并发不只是多线程。分开理解 GraphTask 的调度、嵌套 backward 的死锁风险，以及设备流上的数据依赖。",
+      "order": 10,
+      "source": "05-autograd/diagrams/autograd-concurrency/index.html",
+      "status": "handoff-ready"
+    },
+    {
+      "component": "10-aot-autograd",
+      "slug": "aot-joint-graph",
+      "title": "AOTAutograd：联合图、前反向分区与保存值",
+      "summary": "从动态 eager tape 到可交给编译器的 FX 图。观察 forward 的额外返回值如何成为 backward 的输入。",
+      "order": 1,
+      "source": "10-aot-autograd/diagrams/aot-joint-graph/index.html",
+      "status": "handoff-ready",
+      "series_component": "05-autograd",
+      "series_order": 11
+    },
+    {
+      "component": "05-autograd",
+      "slug": "compiled-autograd",
+      "title": "Compiled Autograd：在 backward 时捕获更大的图",
+      "summary": "为什么 AOTAutograd 仍不能捕获所有运行时反向逻辑？观察 Compiled Autograd 对 hook 和梯度累积的真实 FX 捕获。",
+      "order": 12,
+      "source": "05-autograd/diagrams/compiled-autograd/index.html",
+      "status": "handoff-ready"
     }
   ]
 }

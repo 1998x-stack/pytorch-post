@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "component": "10-aot-autograd",
+  "slug": "aot-joint-graph",
+  "status": "handoff-ready",
+  "scope": "PyTorch 2.10 CPU aot_function 默认 partition_fn；真实捕获 FX 图并执行，不运行 Inductor 或 min-cut 性能实验。",
+  "pytorch_commit": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+  "blockers": [],
+  "sources": [
+    {
+      "id": "pytorch2",
+      "kind": "paper",
+      "relationship": "direct-framework",
+      "status": "verified",
+      "title": "Ansel et al., PyTorch 2: Faster Machine Learning Through Dynamic Python Bytecode Transformation and Graph Compilation",
+      "url": "https://docs.pytorch.org/assets/pytorch2-2.pdf",
+      "version": "ASPLOS 2024, DOI 10.1145/3620665.3640366",
+      "locator": "§3.9 AOTAutograd, pp. 7–8; §4.2 decompositions"
+    },
+    {
+      "id": "aot",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "aot_function interface, joint trace and partition",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/_functorch/aot_autograd.py#L713-L770",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/_functorch/aot_autograd.py:713–770"
+    },
+    {
+      "id": "partition",
+      "kind": "code",
+      "relationship": "source-code",
+      "status": "verified",
+      "title": "default_partition and stashed activations",
+      "url": "https://github.com/pytorch/pytorch/blob/449b1768410104d3ed79d3bcfe4ba1d65c7f22c0/torch/_functorch/partitioners.py#L1013-L1050",
+      "version": "449b1768410104d3ed79d3bcfe4ba1d65c7f22c0",
+      "locator": "torch/_functorch/partitioners.py:1013–1050"
+    }
+  ],
+  "claims": [
+    {
+      "id": "aot-1",
+      "kind": "paper",
+      "statement": "AOTAutograd captures joint forward/backward graphs; functionalization and decomposition simplify graph representation, and partitioning separates forward and backward.",
+      "evidence": [
+        "pytorch2",
+        "aot"
+      ],
+      "limitation": "Historical 2024 design and 2.10 API; exact transformation details depend on path and options.",
+      "status": "verified"
+    },
+    {
+      "id": "aot-2",
+      "kind": "implementation",
+      "statement": "aot_function defaults to default_partition; stashed tensors are forward outputs consumed by the backward graph. Min-cut rematerialization is a separate configurable policy.",
+      "evidence": [
+        "aot",
+        "partition",
+        "pytorch2"
+      ],
+      "limitation": "The example uses default partition, not a measured or executed min-cut policy.",
+      "status": "verified"
+    },
+    {
+      "id": "aot-3",
+      "kind": "measured",
+      "statement": "For f(x)=sum(x*sin(x)), the captured forward FX returns sum, primal and sin; backward graph has primal, sin and tangent inputs. CPU gradient matches eager.",
+      "evidence": [
+        "aot",
+        "partition"
+      ],
+      "limitation": "Single fixed-shape real CPU example; callbacks return executable FX, not optimized machine code.",
+      "status": "verified",
+      "run_id": "cpu-check"
+    }
+  ],
+  "runs": [
+    {
+      "id": "cpu-check",
+      "kind": "correctness",
+      "status": "passed",
+      "command": "OMP_NUM_THREADS=1 python 10-aot-autograd/minimal-implementation/aot-joint-graph/demo.py",
+      "environment": "Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; OMP_NUM_THREADS=1; CUDA unavailable",
+      "raw_log": "10-aot-autograd/experiments/aot-joint-graph/cpu.log"
+    },
+    {
+      "id": "performance",
+      "kind": "benchmark",
+      "status": "not-applicable",
+      "reason": "无性能主张；CUDA 与优化后端未运行。"
+    }
+  ],
+  "artifacts": [
+    {
+      "role": "papers",
+      "path": "10-aot-autograd/papers/aot-joint-graph.md"
+    },
+    {
+      "role": "source-analysis",
+      "path": "10-aot-autograd/source-analysis/aot-joint-graph.md"
+    },
+    {
+      "role": "algorithms",
+      "path": "10-aot-autograd/algorithms/aot-joint-graph.md"
+    },
+    {
+      "role": "implementation",
+      "path": "10-aot-autograd/minimal-implementation/aot-joint-graph/demo.py"
+    },
+    {
+      "role": "experiments",
+      "path": "10-aot-autograd/experiments/aot-joint-graph/cpu.log"
+    },
+    {
+      "role": "review",
+      "path": "10-aot-autograd/references/aot-joint-graph/review.md"
+    },
+    {
+      "role": "handoff",
+      "path": "10-aot-autograd/references/aot-joint-graph/handoff.md"
+    }
+  ]
+}

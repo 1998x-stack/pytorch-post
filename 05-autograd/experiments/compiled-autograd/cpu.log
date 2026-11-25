@@ -1,0 +1,29 @@
+Environment: Python 3.13.5; torch 2.10.0+cpu; torch.version.git_version=449b1768410104d3ed79d3bcfe4ba1d65c7f22c0; Linux x86_64; OMP_NUM_THREADS=1; CUDA unavailable
+Command: OMP_NUM_THREADS=1 python 05-autograd/minimal-implementation/compiled-autograd/demo.py
+Exit: 0
+backward FX graph:
+def forward(self, inputs, sizes, scalars, hooks, packed_data):
+    getitem = inputs[0]
+    getitem_1 = inputs[1];  inputs = None
+    getitem_2 = sizes[0]
+    getitem_3 = sizes[1]
+    getitem_4 = sizes[2];  sizes = None
+    unwrap_maybe_dynamic_int = torch__dynamo_external_utils_unwrap_maybe_dynamic_int(getitem_2);  getitem_2 = None
+    unwrap_maybe_dynamic_int_1 = torch__dynamo_external_utils_unwrap_maybe_dynamic_int(getitem_3);  getitem_3 = None
+    unwrap_maybe_dynamic_int_2 = torch__dynamo_external_utils_unwrap_maybe_dynamic_int(getitem_4);  getitem_4 = None
+    validate_outputs = torch__dynamo_compiled_autograd_ops_validate_outputs([getitem], [((None, None, device(type='cpu'), 7, 0, None), [], False, 7)]);  getitem = None
+    getitem_5 = validate_outputs[0];  validate_outputs = None
+    sum_backward0 = torch__dynamo_compiled_autograd_ops_SumBackward0([getitem_5], [True], [unwrap_maybe_dynamic_int]);  getitem_5 = unwrap_maybe_dynamic_int = None
+    getitem_6 = sum_backward0[0];  sum_backward0 = None
+    validate_outputs_1 = torch__dynamo_compiled_autograd_ops_validate_outputs([getitem_6], [((None, None, device(type='cpu'), 7, 0, None), [unwrap_maybe_dynamic_int_1], False, 7)]);  getitem_6 = unwrap_maybe_dynamic_int_1 = None
+    getitem_7 = validate_outputs_1[0];  validate_outputs_1 = None
+    getitem_8 = hooks[0];  hooks = None
+    call_hook = torch__dynamo_external_utils_call_hook(getitem_8, getitem_7, hook_type = 'tensor_pre_hook');  getitem_8 = getitem_7 = None
+    pow_backward0 = torch__dynamo_compiled_autograd_ops_PowBackward0([call_hook], [True], 2, getitem_1);  call_hook = None
+    getitem_9 = pow_backward0[0];  pow_backward0 = None
+    validate_outputs_2 = torch__dynamo_compiled_autograd_ops_validate_outputs([getitem_9], [((None, None, device(type='cpu'), 7, 0, None), [unwrap_maybe_dynamic_int_2], False, 7)]);  getitem_9 = unwrap_maybe_dynamic_int_2 = None
+    getitem_10 = validate_outputs_2[0];  validate_outputs_2 = None
+    call_accumulate_grad = torch__dynamo_external_utils_call_accumulate_grad(getitem_1, getitem_10, False);  getitem_1 = getitem_10 = None
+    _exec_final_callbacks_stub = torch__dynamo_external_utils__exec_final_callbacks_stub();  _exec_final_callbacks_stub = None
+    return []
+hook gradient: [12.0, 18.0] captures: 1
