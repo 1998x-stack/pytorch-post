@@ -1,0 +1,267 @@
+{
+  "repository": "https://github.com/1998x-stack/Olah-style-posts",
+  "commit": "cd424ad69a66100bfca12e40ec01c44451abae22",
+  "scope": "Complete skill subtree, examples, requirements and upstream documentation/test sources; no CI, historical QA or website mirror.",
+  "files": [
+    {
+      "source": "AGENTS.md",
+      "target": ".pi/skills/olah-style-paper-posts/upstream/AGENTS.md",
+      "sha": "6ea414185b9caf820b048517283b8a4a0c592567"
+    },
+    {
+      "source": "README.md",
+      "target": ".pi/skills/olah-style-paper-posts/upstream/README.md",
+      "sha": "dcc52d488cd422b30e635c2197ade86bed7748ac"
+    },
+    {
+      "source": "examples/resnet/assets/basic_vs_bottleneck.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/assets/basic_vs_bottleneck.svg",
+      "sha": "9c0858d1c0e31ca172dc5dca2042f441ff00ffe5"
+    },
+    {
+      "source": "examples/resnet/assets/degradation_evidence.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/assets/degradation_evidence.svg",
+      "sha": "ec329e0aa89e01626f1c8f9374c18ffb200d28cc"
+    },
+    {
+      "source": "examples/resnet/assets/gradient_shortcut.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/assets/gradient_shortcut.svg",
+      "sha": "2f5f36962f2f74a58de7e2ad7f2806309f82e4d8"
+    },
+    {
+      "source": "examples/resnet/assets/mapping_vs_residual.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/assets/mapping_vs_residual.svg",
+      "sha": "7528a4e3c48ef7f4f0a584a44af29e296ef09db4"
+    },
+    {
+      "source": "examples/resnet/assets/overview.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/assets/overview.svg",
+      "sha": "8ad4a1a2b584c9e3dc30e9fc36805b69f41cc13b"
+    },
+    {
+      "source": "examples/resnet/assets/projection_shortcut.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/assets/projection_shortcut.svg",
+      "sha": "731087cb366d20bb5692e1d0e1a22dfe86214f26"
+    },
+    {
+      "source": "examples/resnet/assets/residual_block_step_by_step.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/assets/residual_block_step_by_step.svg",
+      "sha": "0a49ffdd6ab8986b07231cccdff6127100d1995f"
+    },
+    {
+      "source": "examples/resnet/assets/resnet50_stages.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/assets/resnet50_stages.svg",
+      "sha": "bdcb8ed9ede8e710c7edb6b1ab709283eb3c41a6"
+    },
+    {
+      "source": "examples/resnet/assets/resnet_v1_vs_v2.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/assets/resnet_v1_vs_v2.svg",
+      "sha": "6ae8ab9efa065cf7430ee11d0e63870c8467c985"
+    },
+    {
+      "source": "examples/resnet/assets/tensor_elementwise_add.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/assets/tensor_elementwise_add.svg",
+      "sha": "3ff4afbe2ce308d10ff9736f2322a5ad2f7ceb95"
+    },
+    {
+      "source": "examples/resnet/evidence.json",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/evidence.json",
+      "sha": "9f3dc8deac011b1a1cc7da54afe52ff77d6a3c1c"
+    },
+    {
+      "source": "examples/resnet/index.html",
+      "target": ".pi/skills/olah-style-paper-posts/examples/resnet/index.html",
+      "sha": "f34b78e1075b689dec95f9156de41bc02a173082"
+    },
+    {
+      "source": "examples/transformer/assets/01_rnn_vs_attention.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/01_rnn_vs_attention.svg",
+      "sha": "087b506fef9a0a514f987e2eb71845f8fc98c884"
+    },
+    {
+      "source": "examples/transformer/assets/02_context.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/02_context.svg",
+      "sha": "1490242c68810a9d5b9d6d025f8602236d6b7e3d"
+    },
+    {
+      "source": "examples/transformer/assets/03_qkv_projections.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/03_qkv_projections.svg",
+      "sha": "5c3a436f8624d125a01f341b275d3c06bddf4d3a"
+    },
+    {
+      "source": "examples/transformer/assets/04_attention_pipeline.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/04_attention_pipeline.svg",
+      "sha": "20a3fed77758d61911f6d322d100506134133cc9"
+    },
+    {
+      "source": "examples/transformer/assets/05_attention_heatmap.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/05_attention_heatmap.svg",
+      "sha": "c9877c11a41dc31c69801f36d097d4aab8a72ece"
+    },
+    {
+      "source": "examples/transformer/assets/06_multihead.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/06_multihead.svg",
+      "sha": "90048f6e3ad972c0e343d560bfeb16ee8fa03d84"
+    },
+    {
+      "source": "examples/transformer/assets/07_position_encoding.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/07_position_encoding.svg",
+      "sha": "84d6ef0e41e15002954577038c446d60c4a7e398"
+    },
+    {
+      "source": "examples/transformer/assets/08_masking.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/08_masking.svg",
+      "sha": "cd9f183b61185e24ee2f2f10085c5b4d2e4b13e3"
+    },
+    {
+      "source": "examples/transformer/assets/09_encoder_layer.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/09_encoder_layer.svg",
+      "sha": "8f56ba8a7db08a0e9f469d62603de226f546b80f"
+    },
+    {
+      "source": "examples/transformer/assets/10_decoder_layer.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/10_decoder_layer.svg",
+      "sha": "f6e227de8bd96e0dedeb6e15fd1b4d116e2eed75"
+    },
+    {
+      "source": "examples/transformer/assets/11_full_transformer.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/11_full_transformer.svg",
+      "sha": "fff5dcd1eb4aaf36f04edd766a5bc050a8fbdfb4"
+    },
+    {
+      "source": "examples/transformer/assets/12_train_vs_inference.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/12_train_vs_inference.svg",
+      "sha": "223a8042219bd1df0610c0884e30f09ab3103ba8"
+    },
+    {
+      "source": "examples/transformer/assets/13_quadratic_cost.svg",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/assets/13_quadratic_cost.svg",
+      "sha": "45264a23aa6c94c545e503724a8ff173eaba932d"
+    },
+    {
+      "source": "examples/transformer/evidence.json",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/evidence.json",
+      "sha": "47716bf61355d1e67f11f38d1001bfa5c467496c"
+    },
+    {
+      "source": "examples/transformer/index.html",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/index.html",
+      "sha": "277083aa287d6f96db0c9979c276f2c13497d08c"
+    },
+    {
+      "source": "examples/transformer/mini_attention.py",
+      "target": ".pi/skills/olah-style-paper-posts/examples/transformer/mini_attention.py",
+      "sha": "91b456f83956a853d0cac343a5c81cae58fd6558"
+    },
+    {
+      "source": "requirements-dev.txt",
+      "target": ".pi/skills/olah-style-paper-posts/requirements-dev.txt",
+      "sha": "fa3e0fbe2e967ea912705a168188d688a9b19ad7"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/SKILL.md",
+      "target": ".pi/skills/olah-style-paper-posts/SKILL.md",
+      "sha": "78f4f58144d994f04beb6585e1c2b474ef869d8e"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/assets/css/article.css",
+      "target": ".pi/skills/olah-style-paper-posts/assets/css/article.css",
+      "sha": "467e269a4b514cfd006902db822ac0cba98f4dcc"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/assets/js/interactions.js",
+      "target": ".pi/skills/olah-style-paper-posts/assets/js/interactions.js",
+      "sha": "550328e5eb31d8781fa57a951296d363f7f3df27"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/assets/templates/article.html",
+      "target": ".pi/skills/olah-style-paper-posts/assets/templates/article.html",
+      "sha": "83738a477764994adb5ae9350cff9a450815e958"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/browser-qa.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/browser-qa.md",
+      "sha": "5b3aa683748e67dcc53c34e6a59b1e9e24ee96c0"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/evidence-and-citation.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/evidence-and-citation.md",
+      "sha": "ecf0691cce26036c100357d862c69528b8143e45"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/html-design-system.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/html-design-system.md",
+      "sha": "2545cf5f9853dc41d20c629a519cef4f15216fc1"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/implementation-and-interactivity.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/implementation-and-interactivity.md",
+      "sha": "e9034573a15e6c79f2a816565fe22008820a0801"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/math-typesetting.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/math-typesetting.md",
+      "sha": "9ef2c1be60aca85aeb12527b9cb35bf1257a8bf9"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/narrative-architecture.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/narrative-architecture.md",
+      "sha": "1bc30e1601b5e8d25a07ef06a0dc42bf1c88ada8"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/paper-extraction.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/paper-extraction.md",
+      "sha": "a1386cef536e2e3e93bd93320a697e511e998d28"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/publishing.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/publishing.md",
+      "sha": "4946313107cb712397b2df94c32e9f687f9a47a8"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/scorecard.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/scorecard.md",
+      "sha": "a608b4b4821a3beb27d9d84d32ddc9301dae75f4"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/source-notes.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/source-notes.md",
+      "sha": "32a09e6e8841fc4b91b52dffe89a3e79efa84907"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/references/svg-production.md",
+      "target": ".pi/skills/olah-style-paper-posts/references/svg-production.md",
+      "sha": "0de5da02a32b4d5362cc8d17a31af69d94cf7cbe"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/scripts/browser_check.py",
+      "target": ".pi/skills/olah-style-paper-posts/scripts/browser_check.py",
+      "sha": "d2c7e0973c6ab9056a006943bf7329b20893d645"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/scripts/extract_svg.py",
+      "target": ".pi/skills/olah-style-paper-posts/scripts/extract_svg.py",
+      "sha": "1d033f983d85827b3b40bef08bfffbb1aa12902e"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/scripts/new_post.py",
+      "target": ".pi/skills/olah-style-paper-posts/scripts/new_post.py",
+      "sha": "865e4495111b1d5dd2da73a720b7aa7bdcf52fd1"
+    },
+    {
+      "source": "skills/olah-style-paper-posts/scripts/validate.py",
+      "target": ".pi/skills/olah-style-paper-posts/scripts/validate.py",
+      "sha": "768be9eededdc12e831c86db1a6f7d43b8ef18e3"
+    },
+    {
+      "source": "tests/test_math_skill.py",
+      "target": ".pi/skills/olah-style-paper-posts/upstream/tests/test_math_skill.py",
+      "sha": "63c4df07c2b150a517ff9bb460aa27c32122f9e8"
+    },
+    {
+      "source": "tests/test_validator.py",
+      "target": ".pi/skills/olah-style-paper-posts/upstream/tests/test_validator.py",
+      "sha": "781f643ee12a0b2d99d175795ca3a213631a7c97"
+    }
+  ]
+}

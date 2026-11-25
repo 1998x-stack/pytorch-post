@@ -1,0 +1,462 @@
+{
+  "schema_version": 1,
+  "subdirectories": [
+    "papers",
+    "source-analysis",
+    "algorithms",
+    "minimal-implementation",
+    "experiments",
+    "benchmarks",
+    "diagrams",
+    "references"
+  ],
+  "components": [
+    {
+      "id": "01-architecture",
+      "title": "框架架构",
+      "focus": "Eager 与编译模式的执行边界",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/__init__.py",
+        "aten/src/ATen",
+        "c10"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/1912.01703",
+          "relationship": "direct",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "02-tensor-storage",
+      "title": "张量与存储",
+      "focus": "shape、stride、storage offset、别名与视图",
+      "status": "scaffold",
+      "source_candidates": [
+        "c10/core/TensorImpl.h",
+        "c10/core/StorageImpl.h"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/1912.01703",
+          "relationship": "direct-framework",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "03-aten-operators",
+      "title": "ATen 算子",
+      "focus": "算子 schema、TensorIterator、CPU/GPU kernel",
+      "status": "scaffold",
+      "source_candidates": [
+        "aten/src/ATen/native",
+        "aten/src/ATen/TensorIterator.cpp"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/1912.01703",
+          "relationship": "direct-framework",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "04-dispatcher",
+      "title": "算子分派",
+      "focus": "DispatchKeySet、注册、redispatch、fallback",
+      "status": "scaffold",
+      "source_candidates": [
+        "aten/src/ATen/core/dispatch",
+        "c10/core/DispatchKey.h"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://github.com/pytorch/pytorch/wiki/PyTorch-dispatcher-walkthrough",
+          "relationship": "official-doc",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "05-autograd",
+      "title": "自动微分",
+      "focus": "反向模式、计算图、梯度累积与版本计数",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/csrc/autograd",
+        "tools/autograd/derivatives.yaml"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://openreview.net/forum?id=BJJsrmfCZ",
+          "relationship": "direct",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "06-nn-modules",
+      "title": "神经网络模块",
+      "focus": "参数注册、buffer、hooks、state_dict",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/nn/modules/module.py",
+        "torch/nn/functional.py"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/1912.01703",
+          "relationship": "direct-framework",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "07-optimizers",
+      "title": "优化器",
+      "focus": "SGD、Adam、AdamW 与状态更新",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/optim"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/1412.6980",
+          "relationship": "algorithm",
+          "status": "unverified"
+        },
+        {
+          "url": "https://arxiv.org/abs/1711.05101",
+          "relationship": "algorithm",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "08-fx-graph",
+      "title": "FX 图表示",
+      "focus": "Node、Graph、GraphModule、符号追踪",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/fx"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/2112.08429",
+          "relationship": "direct",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "09-torchdynamo",
+      "title": "TorchDynamo",
+      "focus": "字节码转换、guards、graph breaks",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/_dynamo"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://pytorch.org/blog/pytorch-pytorch-2-paper-tutorial/",
+          "relationship": "direct-framework",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "10-aot-autograd",
+      "title": "AOTAutograd",
+      "focus": "联合前反向图、functionalization、partition",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/_functorch",
+        "torch/_decomp"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://pytorch.org/blog/pytorch-pytorch-2-paper-tutorial/",
+          "relationship": "direct-framework",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "11-torchinductor",
+      "title": "TorchInductor",
+      "focus": "lowering、fusion、schedule、codegen",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/_inductor"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://pytorch.org/blog/pytorch-pytorch-2-paper-tutorial/",
+          "relationship": "direct-framework",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "12-triton",
+      "title": "Triton",
+      "focus": "分块、访存、并行映射、kernel 编译",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/_inductor/codegen/triton.py",
+        "external:triton-lang/triton"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://doi.org/10.1145/3315508.3329973",
+          "relationship": "dependency",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "13-cuda-runtime",
+      "title": "CUDA 运行时",
+      "focus": "stream、event、异步执行、同步",
+      "status": "scaffold",
+      "source_candidates": [
+        "c10/cuda",
+        "aten/src/ATen/cuda"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/1410.0759",
+          "relationship": "related",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "14-memory-allocator",
+      "title": "显存管理",
+      "focus": "caching allocator、碎片、重计算与峰值",
+      "status": "scaffold",
+      "source_candidates": [
+        "c10/cuda/CUDACachingAllocator.cpp",
+        "torch/utils/checkpoint.py"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/1604.06174",
+          "relationship": "related",
+          "status": "unverified"
+        },
+        {
+          "url": "https://arxiv.org/abs/2401.08156",
+          "relationship": "related",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "15-distributed-ddp",
+      "title": "DDP",
+      "focus": "梯度分桶、AllReduce、计算通信重叠",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/nn/parallel/distributed.py",
+        "torch/csrc/distributed/c10d/reducer.cpp"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/2006.15704",
+          "relationship": "direct",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "16-fsdp",
+      "title": "FSDP",
+      "focus": "参数分片、all-gather、reduce-scatter",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/distributed/fsdp"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/2304.11277",
+          "relationship": "mixed",
+          "status": "unverified"
+        },
+        {
+          "url": "https://arxiv.org/abs/1910.02054",
+          "relationship": "mixed",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "17-dtensor",
+      "title": "DTensor",
+      "focus": "DeviceMesh、placement、redistribute",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/distributed/tensor",
+        "torch/distributed/device_mesh.py"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/1811.02084",
+          "relationship": "related",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "18-model-parallelism",
+      "title": "模型并行",
+      "focus": "TP、PP、微批次与多维并行",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/distributed/tensor/parallel",
+        "torch/distributed/pipelining"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/1909.08053",
+          "relationship": "related",
+          "status": "unverified"
+        },
+        {
+          "url": "https://arxiv.org/abs/1811.06965",
+          "relationship": "related",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "19-flash-attention",
+      "title": "FlashAttention",
+      "focus": "IO 感知、online softmax 与 SDPA 后端选择",
+      "status": "scaffold",
+      "source_candidates": [
+        "aten/src/ATen/native/transformers"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/2205.14135",
+          "relationship": "algorithm",
+          "status": "unverified"
+        },
+        {
+          "url": "https://arxiv.org/abs/2307.08691",
+          "relationship": "algorithm",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "20-flex-attention",
+      "title": "FlexAttention",
+      "focus": "score_mod、BlockMask 与编译生成 kernel",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/nn/attention/flex_attention.py"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/2412.05496",
+          "relationship": "direct",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "21-quantization",
+      "title": "量化",
+      "focus": "PTQ、QAT、低精度表示与算子边界",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/ao",
+        "external:pytorch/ao"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/1712.05877",
+          "relationship": "algorithm",
+          "status": "unverified"
+        },
+        {
+          "url": "https://arxiv.org/abs/2210.17323",
+          "relationship": "algorithm",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "22-data-loader",
+      "title": "数据加载",
+      "focus": "worker、sampler、prefetch、pin_memory",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/utils/data"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/2101.12127",
+          "relationship": "related",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "23-profiler",
+      "title": "性能分析",
+      "focus": "CPU/GPU trace、事件关联与性能模型",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/profiler",
+        "external:pytorch/kineto"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://doi.org/10.1145/1498765.1498785",
+          "relationship": "related",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "24-export-deployment",
+      "title": "导出与部署",
+      "focus": "ExportedProgram、约束、部署运行时",
+      "status": "scaffold",
+      "source_candidates": [
+        "torch/export",
+        "external:pytorch/executorch"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://docs.pytorch.org/docs/stable/export.html",
+          "relationship": "official-doc",
+          "status": "unverified"
+        }
+      ]
+    },
+    {
+      "id": "25-torchtitan",
+      "title": "TorchTitan",
+      "focus": "分布式训练组合、训练循环与 checkpoint",
+      "status": "scaffold",
+      "source_candidates": [
+        "external:pytorch/torchtitan"
+      ],
+      "reference_candidates": [
+        {
+          "url": "https://arxiv.org/abs/2410.06511",
+          "relationship": "direct-ecosystem",
+          "status": "unverified"
+        }
+      ]
+    }
+  ]
+}

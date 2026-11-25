@@ -1,0 +1,3 @@
+# DTensor：最小实现
+
+待实现：针对 DeviceMesh、placement、redistribute 的最小可执行示例。先定义可检验行为，再写测试；记录依赖、设备、随机种子与运行命令。不可称教学示例为完整 PyTorch 实现。
